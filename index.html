@@ -37,28 +37,36 @@
 	<a href="https://osgeo.nl/grassgis-course/" title="GRASS Course banner"><img src="https://osgeo.nl/wp-content/uploads/2017/10/GRASSLOGO-1024x115.png" width="112%" height="11" align="center" alt="Banner announcement"></a>  
 	<a href="https://www.osgeo.nl/" title="OSGeo-NL"><img src="images/osgeonl-logo-263x70.png" width="25%" height="25%" align="left" alt="OSGeo NL logo"></a>  
 -->
-    <a href="https://grass.osgeo.org" title="GRASS GIS"><img src="images/grassgis_logo_colorlogo_text_whitebg.png" width="18.5%" height="18.5%" align="right" alt="GRASS GIS logo"></a>
+    <a href="https://grass.osgeo.org" title="GRASS GIS"><img src="images/grassgis_logo_colorlogo_text_whitebg.png" width="18%" height="18%" align="right" alt="GRASS GIS logo"></a>
     <a href="https://www.itc.nl/" title="ITC"><img src="images/ITC_UT_logo.png" width="15%" height="15%" align="left" alt="ITC logo"></a>
     <h1 align="center">Hands-on to GIS and RS with GRASS GIS</h1>
     <h2 class="notoc" align="center">ITC - University of Twente</h2>
-    <h2 class="notoc" align="center">Enschede, The Netherlands</h2>
     <h3 class="notoc" align="center">November 3rd, 2017</h3>
+    <h4 class="notoc" align="center">Enschede, The Netherlands</h4>
     <p align="center">
     <a href="https://veroandreo.wordpress.com/" target="_blank">Veronica Andreo</a>, <a href="https://www.un-ihe.org/sajid-pareeth" target="_blank">Sajid Pareeth</a> and <a href="https://pvanb.wordpress.com/" target="_blank">Paulo van Breugel</a>
     </p>
-    <p align="center"><a href="https://osgeo.nl/" title="OSGeo-NL"><img src="images/osgeonl-logo-263x70.png" align="center" alt="OSGeo-NL logo"></a></p>
+    <p align="center"><a href="https://osgeo.nl/" title="OSGeo-NL"><img src="images/osgeonl-logo-263x70.png" width="25%" height="25%" align="center" alt="OSGeo-NL logo"></a></p>
     <p style="border-top-style: solid; border-bottom-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px; padding_bottom: 5px;" align="center">
 <!--
-TODO: add an animation or screenshot
-    <a href="#lst-time-series-animation" title="lst time series animation"><img style="width: 25%;" src="figures/animation_nc_zoom.gif" alt="NC to Wake LST animation"></a>
+TODO: add 2 more animations or screenshots
 -->
+    <a href="#chla-arg-screenshot" title="Chl-a screenshot"><img style="width: 35%;" src="images/screenshot_cla_arg.png" alt="Chl-a time plot"></a>
     </p>
     <p>
     Workshop outline:
     <ul>
         <li><a href="#grassgisintro">Introduction to GRASS GIS</a></li>
-        <li><a href="#temporalintro">Working with GRASS GIS: Guided exercise</a></li>
-        <li><a href="#temporalhands">Choose your own adventure: 3 Hands-on exercises</a></li>
+        <li><a href="#guidedtour">Working with GRASS GIS: A guided tour</a></li>
+        <li><a href="#handson-optatives">Choose your own adventure: 3 hands-on exercises</a></li>
+        <ul>
+			<li><a href="#time-series">Time series in GRASS GIS</a></li>
+			<li><a href="#L8-remotesensing">Remote sensing</a></li>
+			<li><a href="#paulo">Spatial interpolation?</a></li>
+<!--
+			TODO: make the exercises' names nicer :)
+-->
+        </ul>
     </ul>
     </p>
     <p>
@@ -154,13 +162,13 @@ TODO: add an animation or screenshot
 		  <td><a href="https://grass.osgeo.org/grass72/manuals/full_index.html#d" target="_blank">d.*</a></td>
 		  <td>display</td>
 		  <td>graphical output</td>
-		  <td><a href="https://grass.osgeo.org/grass72/manuals/d.rast.html" target="_blank">d.rast</a>: display raster map, d.vect: display vector map</td>
+		  <td><a href="https://grass.osgeo.org/grass72/manuals/d.rast.html" target="_blank">d.rast</a>: display raster map, <a href="https://grass.osgeo.org/grass72/manuals/d.vect.html">d.vect</a>: display vector map</td>
       </tr>
       <tr>
 		  <td><a href="https://grass.osgeo.org/grass72/manuals/full_index.html#r" target="_blank">r.*</a></td>
 		  <td>raster</td>
 		  <td>raster processing</td>
-		  <td><a href="https://grass.osgeo.org/grass72/manuals/r.mapcalc.html" target="_blank">r.mapcalc</a>: map algebra, r.univar: univariate statistics</td>
+		  <td><a href="https://grass.osgeo.org/grass72/manuals/r.mapcalc.html" target="_blank">r.mapcalc</a>: map algebra, <a href="https://grass.osgeo.org/grass72/manuals/r.univar.html">r.univar</a>: univariate statistics</td>
       </tr>
       <tr>
 		  <td><a href="https://grass.osgeo.org/grass72/manuals/full_index.html#r" target="_blank">v.*</a></td>
@@ -201,17 +209,22 @@ TODO: add an animation or screenshot
     </table>
     <p>
 	The graphical user interface offers a tree view as well as a search engine.
-<!--
-	TODO: add screenshot
--->
+    <div class="imagebox">
+        <img style="width: 30%;" src="images/module_tree.png" alt="Module tree tab" title="Module tree tab">
+        <img style="width: 30%;" src="images/module_tree_search.png" alt="Module search" title="Module search"><br>
+        Module tree and search engine
+    </div>	
     <p>
     It is also possible to install further modules, called <b>Add-ons</b>, from a centralized <a href="https://grass.osgeo.org/grass7/manuals/addons/">GRASS GIS Add-on repository</a> at OSGeo or from github using the command <a href="https://grass.osgeo.org/grass72/manuals/g.extension.html">g.extension</a>.
 	<pre>
-	# install extension from GRASS GIS Add-on repository
-	g.extension extension=r.hants
-	# install extension from github repository
-	g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/r.in.sos
-	</pre>
+		<code class="neutral">
+# install extension from GRASS GIS Add-on repository
+g.extension extension=r.hants
+
+# install extension from github repository
+g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/r.in.sos
+		</code>
+		</pre>
     <h3>Region and Mask</h3>
     The <b>computational (or current) region</b> is the <i>actual setting of the region boundaries and the actual raster resolution</i>.<br>
     The raster input maps are automatically (on the fly) cropped/padded and rescaled to match the current region, the output maps have their bounds and resolution equal to those of the current computational region, while vector maps are always considered completely.
@@ -282,21 +295,34 @@ r.colors(map=output, color="elevation")
 -->
     <h4>WPS - OGC Web Processing Service</h4>
     It is possible to run GRASS GIS modules through the web using the <a href="https://en.wikipedia.org/wiki/Web_Processing_Service" target="_blank">Web Processing Service</a> (WPS is an <a href="https://en.wikipedia.org/wiki/Open_Geospatial_Consortium" target="_blank">OGC</a> standard). The Free and Open Source software <a href="http://zoo-project.org/" target="_blank">ZOO-Project</a> and <a href="http://pywps.org/" target="_blank">PyWPS</a> allow the user to run GRASS GIS commands in a simple way.
-	
+	<p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
+	<h2><a name="guidedtour">Working with GRASS GIS: A guided tour</a></h2>
 <!--
-    <h2><a name="temporalintro">Temporal GRASS GIS introduction</a></h2>
+TODO: Sajid 
+-->
+	<p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
+	<h2><a name="handson-optatives">Choose your own adventure: 3 hands-on exercises</a></h2>
+<!--
+TODO: 
+Temporal exercise (Vero)
+RS processing (Sajid)
+Another one (Paulo)
+-->
+
+<!--
+    <h3><a name="time-series">Time series in GRASS GIS</a></h3>
 
     <p>
 	GRASS GIS is the first Open Source GIS that incorporated capabilities to manage, analyze, process and visualize spatio-temporal data, as well as the temporal relationships among time series.
     <p>
-    Importantly, the <b>TGRASS</b> concept is based on metadata and does not duplicate any datasets. It follows a <i>snapshot</i> approach, i.e.: add time stamps to existent maps, to integrate time dimension to the classical spatial GIS. In GRASS GIS words, all pixels in a raster map and all elements in a vector map, share the same time stamp. A collection of time stamped maps (snapshots) of the same variable are called <b>space-time datasets (STDS)</b> in TGRASS. Each map in a STDS might have a different spatial and temporal extent.
+    Importantly, the <b>TGRASS</b> concept is based on metadata and does not duplicate any datasets. It follows a <i>snapshot</i> approach, i.e.: add time stamps to existent maps, to integrate the time dimension to the classical spatial GIS. In GRASS GIS words, all pixels in a raster map and all elements in a vector map, share the same time stamp. A collection of time stamped maps (snapshots) of the same variable are called <b>space-time datasets (STDS)</b> in TGRASS. Each map in a STDS might have a different spatial and temporal extent.
     <p>
-    TGRASS uses an SQL database to store the temporal and spatial extension of STDS, as well as the topological relationships among maps and among STDS.
+    TGRASS uses an SQL database to store the temporal and spatial extension of STDS, as well as the topological relationships among maps and among STDS. 
 
-    <h3>Terminology overview</h3>
     <h4>Temporal database</h4>
     A temporal database is a mapset-specific database in which all time stamped maps are registered, i.e.: their spatial and temporal extents, unique ID and map type metadata are stored.
     This allows users to perform complex SQL queries using the spatio-temporal extent and metadata information for map selection (See <a href=#temporal_analysis>Temporal data analysis</a> section).
+    
     <h4>Space-time datasets</h4>
     Space-time datasets are called differently according to the map type they are formed of:
     <ul>
@@ -304,6 +330,7 @@ r.colors(map=output, color="elevation")
         <li>Space time 3D raster datasets (<b>STR3DS</b>) collections of time stamped 3D raster maps.</li>
         <li>Space time vector datasets (<b>STVDS</b>) collections of time stamped vector maps.</li>
     </ul>
+	
 	<h4>Spatio-temporal modules</h4>
 	<ul>
 		<li><b>t.*</b>: General modules to handle STDS of all types</li>
@@ -311,45 +338,7 @@ r.colors(map=output, color="elevation")
 		<li><b>t.rast3d.*</b>: Modules that specifically deal with STR3DS</li>
 		<li><b>t.vect.*</b>: Modules that specifically deal with STVDS</li>
 	</ul>
-    <h4>Absolute time vs relative time</h4>
-    <p>
-    Two different time definitions are used in TGRASS:
-    <table style="width:60%" border="1" align="center" bgcolor="#FFFFFF">
-      <tr>
-        <th>Absolute time</th>
-        <th>Relative time</th>
-      </tr>
-      <tr>
-        <td>Gregorian calendar (ISO 8601 time format notation)</td>
-        <td>An integer and a time unit (year, month, day, hour, minute, seconds)</td>
-      </tr>
-      <tr>
-        <td>Example: 2013-10-15 13:00:00</td>
-        <td>Example: 4 years, 90 days, 1 second</td>
-      </tr>
-    </table>
-    <h4>Time intervals vs time instances</h4>
-    <p>
-    GRASS GIS supports both time intervals and time instances as map time stamps:
-    <p>
-    <table style="width:60%" border="1" align="center" bgcolor="#FFFFFF">
-      <tr>
-          <th>Time intervals</th>
-          <th>Time instances</th>
-      </tr>
-      <tr>
-          <td>Defined by start time and end time: [start, end)</td>
-          <td>Defined by start time</td>
-      </tr>
-      <tr>
-          <td>Support for gaps, allow overlapping, might contain time instances, might be irregularly spaced in time</td>
-          <td>Punctual events</td>
-      </tr>
-    </table>
-    <h4>Granularity</h4>
-    <p>
-    The granularity is the largest common divider granule of time intervals and gaps between intervals or instances from all time stamped maps that are collected in a STDS. It is represented as a number of seconds, minutes, hours, days, weeks, months or years.
-
+    
     <h3>Workflow overview</h3>
     Now, how do we work with time series in GRASS GIS? Where do we start? Well, assuming we already have our maps in the GRASSDBASE, the first step is to set the connection to the temporal database. This is something we will need to do only once per mapset. After that, we create the STDSs, i.e.: the containers for the time series, and finally we assign time stamps to maps and register them in the STDS. After these basic steps, the following will depend on our specific objectives.
     <ol>
@@ -377,7 +366,7 @@ r.colors(map=output, color="elevation")
             <a href="https://grass.osgeo.org/grass72/manuals/t.rast.univar.html" target="_blank">t.rast.univar</a>,
             <a href="https://grass.osgeo.org/grass72/manuals/t.vect.univar.html" target="_blank">t.vect.univar</a>
         </li>
-        <li>Spatio-temporal processing (a bit raster biased):
+        <li>Spatio-temporal processing:
             <ul>
                 <li>
                     data aggregation: <a href="https://grass.osgeo.org/grass72/manuals/t.rast.series.html" target="_blank">t.rast.series</a>,
@@ -1076,18 +1065,20 @@ Alternatively, you can adjust the margin settings, zoom in to different parts of
     </ul>
     </p>
     <hr>
-    <p><i>Last changed: 2017-07-17 20:17</i></p>
+    <p><i>Last changed: $date$</i></p>
     <p>
     <a href="http://grass.osgeo.org/grass72/manuals/">GRASS GIS manual main index</a> |
-    <a href="http://grass.osgeo.org/grass72/manuals/temporal.html">Temporal modules index</a> |
     <a href="http://grass.osgeo.org/grass72/manuals/topics.html">Topics index</a> |
     <a href="http://grass.osgeo.org/grass72/manuals/keywords.html">Keywords Index</a> |
-    <a href="http://grass.osgeo.org/grass72/manuals/full_index.html">Full index</a>
+    <a href="http://grass.osgeo.org/grass72/manuals/full_index.html">Full index</a> | 
+    <a href="http://grass.osgeo.org/grass72/manuals/raster.html">Raster index</a> | 
+    <a href="http://grass.osgeo.org/grass72/manuals/vector.html">Vector index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/temporal.html">Temporal index</a> |
     </p>
     <p>
     <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="ccbysa.png"></a>
     <br>
-    TGRASS: temporal data processing with GRASS GIS Workshop at FOSS4G Europe 2017 by Veronica Andreo, Luca Delucchi and Markus Neteler is licensed under a <b><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a></b> - Thanks to <a href="http://www4.ncsu.edu/~vpetras/index.html" target="_blank"><b>Vaclav Petras</b></a> for the style.
+    Hands-on to GIS and RS with GRASS GIS by Veronica Andreo, Sajid Pareeth and Paulo van Breugel is licensed under a <b><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a></b> - Thanks to <a href="http://www4.ncsu.edu/~vpetras/index.html" target="_blank"><b>Vaclav Petras</b></a> for the style.
     </p>
   </div>
 
