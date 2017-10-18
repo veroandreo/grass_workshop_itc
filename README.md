@@ -46,10 +46,14 @@ For a quick-start guide, see: https://live.osgeo.org/en/quickstart/osgeolive_qui
 
 ### GRASS GIS Add-ons
 
-* [r.modis.download]()
-* [r.modis.import]()
+* [r.modis.download](https://grass.osgeo.org/grass72/manuals/addons/r.modis.download.html)
+* [r.modis.import](https://grass.osgeo.org/grass72/manuals/addons/r.modis.import.html)
 
 Install with `g.extension extension=r.modis`.
+
+* [v.strds.stats](https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html) 
+
+Instal with `g.extension v.strds.stats`
 
 ## Data
 
