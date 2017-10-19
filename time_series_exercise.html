@@ -24,16 +24,14 @@
 
 </head>
 <body>
-
+  <div id="container">
     <h3><a name="time-series">Time series in GRASS GIS: basic concepts and workflow overview</a></h3>
-
     <p>
 	GRASS GIS is <b>the first Open Source GIS</b> that incorporated capabilities to <b>manage, analyze, process and visualize spatio-temporal data</b>, as well as the temporal relationships among time series.
     <p>
     Importantly, the temporal GRASS (<b>TGRASS</b>) concept is <b>based on metadata</b> and does not duplicate any datasets. It follows a <i>snapshot</i> approach, i.e. add time stamps to existent maps, to integrate the time dimension to the classical spatial GIS. A collection of time stamped maps (snapshots) of the same variable are called <b>space-time datasets (STDS)</b> in TGRASS. Each map in a STDS might have a different spatial and temporal extent.
     <p>
-    TGRASS uses an SQL database to store the temporal and spatial extension of STDS, as well as the topological relationships among maps and among STDS in each mapset. 
-    
+    TGRASS uses an SQL database to store the temporal and spatial extension of STDS, as well as the topological relationships among maps and among STDS in each mapset.  
     <h4>Space-time datasets</h4>
     Space-time datasets are called differently according to the map type they are formed of:
     <ul>
@@ -471,7 +469,7 @@ d.text -b text="Month of maximum LST 2015-2016" color=black bgcolor=229:229:229 
         </code>
     </pre>
     <div class="imagebox">
-        <img style="width: 70%;" src="figures/month_max_lst.png" alt="Month of maximum LST" title="Month of maximum LST"><br>
+        <img style="width: 70%;" src="images/month_max_lst.png" alt="Month of maximum LST" title="Month of maximum LST"><br>
         Month of maximum LST for the period 2015-2016
     </div>
     <p>
@@ -526,7 +524,7 @@ gmod.Module("v.db.select", map="geology_aggr_lst", file="ts_polygons.csv")
         </code>
     </pre>
     </p>
-    <h3>Temporal data visualization</h3>
+    <h4>Temporal data visualization</h4>
     <p>
 	Finally, GRASS GIS offers different options to visualize time series data. For this exercise, we will use two of them: <a href="https://grass.osgeo.org/grass72/manuals/g.gui.tplot.html" target="_blank">g.gui.tplot</a> that allows us to to plot the time series of our variable of interest, be it in a STRDS or a STVDS, for a specific point of of our study region. Basically, you need to set the strds or stvds and a pair of X,Y coordinates. The latter can be typed directly, copied from the map display and pasted or directly chosen from the display.</p>
     <pre>
@@ -546,7 +544,8 @@ Alternatively, you can adjust the margin settings, zoom in to different parts of
         <img style="width: 60%;" src="images/g_gui_tplot_3.png" alt="g.gui.tplot third" title="g.gui.tplot third step"><br>
         <img style="width: 40%;" src="images/g_gui_tplot_4.png" alt="g.gui.tplot fourth" title="g.gui.tplot fourth step"><br>
     </div>
-		</code>	
+		</code>
+	</pre>
     <p>
 	Another tool to visualize time series in more dynamic way and that allows us to see changes in space an time simultaneously is <a href="https://grass.osgeo.org/grass72/manuals/g.gui.animation.html" target="_blank">g.gui.animation</a>. It also allows to animate vector time series, as well as lists of raster or vector maps not specifically registered as time series. When executed from command line, options are more limited than when the module is run from the GUI, where it is possible to add different decorations and customize several options.</p>
     <pre>
@@ -571,5 +570,6 @@ g.gui.animation strds=LST_Day_monthly_celsius@modis_lst
     </div>
 		</code>
     </pre>
+    </div>
 </body>
 </html>
