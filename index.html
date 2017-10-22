@@ -71,11 +71,8 @@ TODO: make the exercises' names nicer :)
         <li>GRASS GIS 7.2: <a href="https://grass.osgeo.org/download/software/">download</a> | <a href="https://live.osgeo.org/">OSGeo-live</a></li>
 <!--
         <li>
-            GRASS GIS Add-ons: <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.download.html">r.modis.download</a>,
-            <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.import.html">r.modis.import</a> and
-            <a href="https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html">v.strds.stats</a>
+            GRASS GIS Add-ons: <a href="https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html">v.strds.stats</a>
         </li>
-        <li> <a href="http://www.pymodis.org">pyModis</a> library</li>
 -->
     </ul>
     </p>
@@ -98,7 +95,7 @@ TODO: @Paulo and @Sajid: please add here links to the data you will use (if need
 
     Working with GRASS GIS is not much different than any other GIS. Just a few commonly used terms need to be introduced first.
     <div class="imagebox">
-		<img style="width: 40%;" src="images/start_screen_grass723.png" alt="GRASS start screen" title="GRASS start screen"><br>
+		<img style="width: 30%;" src="images/start_screen_grass723.png" alt="GRASS start screen" title="GRASS start screen"><br>
         GRASS GIS start screen: GRASS database, Location and Mapset wizard
     </div>
 
@@ -108,7 +105,7 @@ TODO: @Paulo and @Sajid: please add here links to the data you will use (if need
     <b>MAPSETs</b> are subdirectories within Locations. In a <b>MAPSET</b> you can organize GIS maps thematically, geographically, by project or however you prefer. Mapsets can also be named after users, for example.<br>
     <p>Within each Location, a mandatory <b>PERMANENT</b> Mapset exists. This mapset can contain commonly used data such as base maps. The PERMANENT Mapset also contains metadata related to the Location it belongs to such as projection. When GRASS GIS is started, it connects to a Database, Location and Mapset specified by the user.</p>    
     <div class="imagebox">
-        <img style="width: 60%;" src="images/grass_database.png" alt="GRASS DATABASE, LOCATIONs, and MAPSETs" title="GRASS DATABASE, LOCATIONs, and MAPSETs"><br>
+        <img style="width: 50%;" src="images/grass_database.png" alt="GRASS DATABASE, LOCATIONs, and MAPSETs" title="GRASS DATABASE, LOCATIONs, and MAPSETs"><br>
         GRASS DATABASE, LOCATIONs and MAPSETs
     </div>
 	
@@ -264,7 +261,7 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
     The GUI is the simplest way to approach GRASS GIS. It offers a user-friendly approach to executing modules where the user can navigate to data layers that they would like to analyze and modify processing options with simple check boxes. The GUI also offers an easily accessible manual on how to execute a model. 
     The <a href="https://grass.osgeo.org/grass72/manuals/wxGUI.html" target="_blank">GRASS GIS GUI</a> is composed of two elements, the <code>Layer Manager</code> where you can find all the GRASS GIS modules and manage your data and, the <code>Map Display</code> where you can navigate, print and query your maps. The GUI also comes with a Python shell for rapid prototyping.
     <div class="imagebox">
-        <img style="width: 90%;" src="images/GUI_description.png" alt="GRASS GIS GUI" title="GRASS GIS GUI"><br>
+        <img style="width: 70%;" src="images/GUI_description.png" alt="GRASS GIS GUI" title="GRASS GIS GUI"><br>
         GRASS GIS Graphical User Interface (GUI)
     </div>
     Otherwise you can also use GRASS GIS inside QGIS by either using the <b>GRASS GIS plugin</b> or through <b>Processing</b>.
@@ -273,7 +270,7 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
     The command line is the traditional and, probably, the most powerful way to use GRASS GIS, used daily by many GRASS GIS power users worldwide.<br><br>
     The command line interface allows users to execute a module using command prompts specific to that module. This is handy when you are running similar analyses with minor modification or are familiar with the module commands for quick efficient processing. 
     <div class="imagebox">
-        <img style="width: 50%;" src="images/grass_command_line.png" alt="GRASS GIS command line" title="GRASS GIS command line"><br>
+        <img style="width: 30%;" src="images/grass_command_line.png" alt="GRASS GIS command line" title="GRASS GIS command line"><br>
         GRASS GIS command line interface
     </div>
 	<b>Advantages of the command line</b>
@@ -291,6 +288,10 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
 		</div>
 	</ul>
 	Remember that there is a simplified command line included in the GUI, tab “Command console”. It offers a “Command prompt protocol” button.
+	<div class="imagebox">
+		<img style="width: 25%;" src="images/command_prompt_gui.png" alt="Command line in the GUI" title="Command line in the GUI"><br>
+		Command line in the main GUI
+	</div>
 	
     <h4>Python</h4>
     Python is a powerful and simple programming language, and you can use it to:
@@ -300,12 +301,12 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
         <li>create new add-ons by using GRASS GIS modules along with a wide number of Python libraries.</li>
     </ul>
     <p>
-    The simplest way to execute the Python code which uses GRASS GIS packages is to use Simple Python editor integrated in GRASS GIS accessible from the toolbar or the Python tab in the Layer Manager. Another option is to write the Python code in your favorite plain text editor. Then, run the script in GRASS GIS using the main menu File -> Launch script.
+    The simplest way to execute the Python code which uses GRASS GIS packages is to use Simple Python editor integrated in GRASS GIS accessible from the toolbar or the Python tab in the Layer Manager. 
 	<div class="imagebox">
-		<img style="width: 70%;" src="images/simple_python_editor.png" alt="Python console and simple python editor" title="Python console and simple python editor"><br>
+		<img style="width: 50%;" src="images/simple_python_editor.png" alt="Python console and simple python editor" title="Python console and simple python editor"><br>
 		Python console and simple Python editor
 	</div>
-    Here's an example of Python code to run GRASS GIS modules:
+    Another option is to write the Python code in your favorite plain text editor. Then, run the script in GRASS GIS using the main menu File -> Launch script. Here's an example of Python code to run GRASS GIS modules:
     <pre>
 		<code class="python">
 !/usr/bin/env python
@@ -332,16 +333,21 @@ r.colors(map=output, color="elevation")
 		</code>
     </pre>
     <h4>QGIS</h4>
+    There are two ways to use GRASS GIS and its functionalities in QGIS: through the GRASS GIS plugin and through Processing. In the first case, QGIS works as a GUI for GRASS GIS, and users can process and analyze their data in the GRASS Database with GRASS GIS modules. In the second case some of the GRASS GIS modules are available through Processing toolbox, and it allows to use GRASS functionality with data not necessarily in the GRASS Database.
+    <div class="imagebox">
+		<img style="width: 45%;" src="images/grass_processing.png" alt="GRASS modules through Processing Toolbox" title="GRASS modules through Processing Toolbox"><br>
+		GRASS modules through Processing Toolbox
+    </div>
 <!--
-    TODO: add screenshots
+    TODO: GRASS plugin does not show all functionality
 -->
 	<h4>R</h4>
 	GRASS GIS and R can be used together in two ways:
 	<ul>
-		<li>Using <b>R within GRASS GIS session</b>, i.e. you start R (or RStudio) from the GRASS GIS command line.</li>
-		<li>Using <b>GRASS GIS within an R session</b>, i.e. you connect to a GRASS GIS Spatial Database from within R (or RStudio).</li>
+		<li>Using <b><a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7#R_within_GRASS" target="_blank">R within GRASS GIS session</a></b>, i.e. you start R (or RStudio) from the GRASS GIS command line.</li>
+		<li>Using <b><a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7#GRASS_within_R" target="_blank">GRASS GIS within an R session</a></b>, i.e. you connect to a GRASS GIS Spatial Database from within R (or RStudio).</li>
 	</ul> 
-	A special R package <b>rgrass7</b> provides the necessary interface to read and write data from and into GRASS Database.  More details and examples on both modes can be found in the <a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7" target="_blank">R and GRASS wiki page</a>.
+	A special R package, <b>rgrass7</b>, provides the necessary interface to read and write data from and into GRASS Database, as well as to execute GRASS GIS commands from within R. More details and examples on both ways of combining GRASS and R can be found in the <a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7" target="_blank">GRASS and R</a> dedicated wiki page.
 	<div class="imagebox">
 		<img style="width: 25%;" src="images/R_within_grass.png" alt="Calling R from within GRASS" title="Calling R from within GRASS">
 		<img style="width: 59%;" src="images/Rstudio_from_grass.png" alt="Calling Rstudio from within GRASS" title="Calling Rstudio from within GRASS"><br>
