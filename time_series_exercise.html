@@ -25,7 +25,8 @@
 </head>
 <body>
   <div id="container">
-    <h3><a name="time-series">Time series in GRASS GIS: basic concepts and workflow overview</a></h3>
+	<h1>Time series in GRASS GIS</h1>
+    <h2><a name="time-series">Basic concepts and workflow overview</a></h2>
     <p>
 	GRASS GIS is <b>the first Open Source GIS</b> that incorporated capabilities to <b>manage, analyze, process and visualize spatio-temporal data</b>, as well as the temporal relationships among time series.
     <p>
@@ -109,7 +110,7 @@
         </li>
     </ol>
 
-    <h3><a id="temporalhands">Time series in GRASS GIS: Hands-on to raster time series processing</a></h3>
+    <h2><a id="temporalhands">Hands-on to raster time series processing</a></h2>
     <p>
 	Download the <code>modis_lst</code> mapset and unzip it within <code>nc_basic_spm_grass7</code>. If you are in a different mapset, change to modis_lst using <code>g.mapset mapset=modis_lst</code>. Once there (you can check with <code>g.mapset -p</code>), first obtain the list of raster maps available using <a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>. Choose one of the LST maps to display either using the GUI or through the <b><i>d.*</i></b> commands in the terminal (HINT: <i>remember to check the computational region if nothing is displayed!</i>). 
 	<p>
@@ -168,15 +169,17 @@ d.northarrow style=1b text_color=black
 d.text -b text="LST Day from MOD11B3.006 - North Carolina - March, 2015" \
  color=black bgcolor=229:229:229 align=cc font=sans size=8
         </code>
+<!--
         <code class="gui">
         <video controls>
 			<source src="images/gui_display_map.ogg" type="video/ogg">
 		</video>
 		</code>
+-->
     </pre>
     <p style="text-align:center">
     <div class="imagebox">
-        <img style="width: 70%;" src="images/mod11b3_nc.png" alt="display LST map with decorations" title="display LST map with decorations"><br>
+        <img style="width: 50%;" src="images/mod11b3_nc.png" alt="display LST map with decorations" title="display LST map with decorations"><br>
         MODIS LST map with decorations (scaled Kelvin pixel values)
     </div></p>
 	<p>
@@ -324,7 +327,7 @@ TODO
 		</code>
     </pre>
     <div class="imagebox">
-        <img style="width: 70%;" src="images/lst_modis_celsius.png" alt="LST MODIS in degrees Celsius" title="LST MODIS in degrees Celsius"><br>
+        <img style="width: 50%;" src="images/lst_modis_celsius.png" alt="LST MODIS in degrees Celsius" title="LST MODIS in degrees Celsius"><br>
         MODIS LST re-scaled to degrees Celsius
     </div>
     <p>
@@ -413,7 +416,7 @@ gmod.Module("r.colors", map="LST_Day_max", color="celsius")
         </code>
     </pre>
     <div class="imagebox">
-        <img style="width: 70%;" src="images/max_lst.png" alt="Maximum LST 2015-2016" title="Maximum LST 2015-2016"><br>
+        <img style="width: 50%;" src="images/max_lst.png" alt="Maximum LST 2015-2016" title="Maximum LST 2015-2016"><br>
         Maximum LST in the period 2015-2016 in North Carolina
     </div>
     </pre>
@@ -469,7 +472,7 @@ d.text -b text="Month of maximum LST 2015-2016" color=black bgcolor=229:229:229 
         </code>
     </pre>
     <div class="imagebox">
-        <img style="width: 70%;" src="images/month_max_lst.png" alt="Month of maximum LST" title="Month of maximum LST"><br>
+        <img style="width: 50%;" src="images/month_max_lst.png" alt="Month of maximum LST" title="Month of maximum LST"><br>
         Month of maximum LST for the period 2015-2016
     </div>
     <p>
@@ -570,6 +573,35 @@ g.gui.animation strds=LST_Day_monthly_celsius@modis_lst
     </div>
 		</code>
     </pre>
-    </div>
+    
+    <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
+    <h2>Other (very) useful links</h2>
+    <ul>
+        <li>Temporal data processing wiki: <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Temporal_data_processing</a></li>
+        <li>GRASS GIS temporal workshop: <a href="http://ncsu-geoforall-lab.github.io/grass-temporal-workshop/" target="_blank">http://ncsu-geoforall-lab.github.io/grass-temporal-workshop/</a></li>
+        <li>GRASS GIS and R for time series processing: <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing/GRASS_R_raster_time_series_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Temporal_data_processing/GRASS_R_raster_time_series_processing</a></li>
+    </ul>
+    <h2>References</h2>
+    <ul>
+        <li>Gebbert, S., Pebesma, E. (2014). <em>A temporal GIS for field based environmental modeling</em>. Environmental Modelling & Software, 53, 1–12. <a href="https://doi.org/10.1016/j.envsoft.2013.11.001" target="_blank">DOI</a></li>
+        <li>Gebbert, S., Pebesma, E. (2017). <em>The GRASS GIS temporal framework</em>. International Journal of Geographical Information Science 31, 1273-1292. <a href="http://dx.doi.org/10.1080/13658816.2017.1306862" target="_blank">DOI</a></li>
+    </ul>
+    </p>
+    <hr>
+    <p><i>Last changed: ADD DATE</i></p>
+    <p>
+    <a href="http://grass.osgeo.org/grass72/manuals/">GRASS GIS manual main index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/topics.html">Topics index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/keywords.html">Keywords Index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/full_index.html">Full index</a> | 
+    <a href="http://grass.osgeo.org/grass72/manuals/raster.html">Raster index</a> | 
+    <a href="http://grass.osgeo.org/grass72/manuals/vector.html">Vector index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/temporal.html">Temporal index</a> |
+    </p>
+    <p>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="ccbysa.png"></a>
+    <br>
+    Hands-on to GIS and RS with GRASS GIS by Veronica Andreo, Sajid Pareeth and Paulo van Breugel is licensed under a <b><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a></b> - Thanks to <a href="http://www4.ncsu.edu/~vpetras/index.html" target="_blank"><b>Vaclav Petras</b></a> for the style.
+    </p>
 </body>
 </html>
