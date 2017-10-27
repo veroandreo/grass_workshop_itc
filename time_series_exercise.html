@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Time series in GRASS GIS</title>
+  <meta name="description" content="Exercise on raster time series">
+  <meta name="author" content="Veronica Andreo">
+  <link rel="shortcut icon" href="grass.png">
+
+  <script type="text/javascript" src="lib/jquery.js"></script>
+  <script type="text/javascript" src="lib/codetabs.js"></script>
+  <script type="text/javascript" src="lib/highlights/highlight.pack.js"></script>
+  <link rel="stylesheet" href="lib/highlights/styles/default.css">
+  <link rel="stylesheet" href="css/grassdocs.css">
+  <link rel="stylesheet" href="css/codetabs.css">
+
+<style type="text/css">
+.hljs{
+    display: none;
+    /*padding: 0em;*/
+}
+</style>
+
+</head>
+<body>
+  <div id="container">
+	<h1>Time series in GRASS GIS</h1>
+    <h2><a name="time-series">Basic concepts and workflow overview</a></h2>
+    <p>
+	GRASS GIS is <b>the first Open Source GIS</b> that incorporated capabilities to <b>manage, analyze, process and visualize spatio-temporal data</b>, as well as the temporal relationships among time series.
+    <p>
+    Importantly, the temporal GRASS (<b>TGRASS</b>) concept is <b>based on metadata</b> and does not duplicate any datasets. It follows a <i>snapshot</i> approach, i.e. add time stamps to existent maps, to integrate the time dimension to the classical spatial GIS. A collection of time stamped maps (snapshots) of the same variable are called <b>space-time datasets (STDS)</b> in TGRASS. Each map in a STDS might have a different spatial and temporal extent.
+    <p>
+    TGRASS uses an SQL database to store the temporal and spatial extension of STDS, as well as the topological relationships among maps and among STDS in each mapset.  
+    <h4>Space-time datasets</h4>
+    Space-time datasets are called differently according to the map type they are formed of:
+    <ul>
+        <li>Space time raster datasets (<b>STRDS</b>) collections of time stamped raster maps.</li>
+        <li>Space time 3D raster datasets (<b>STR3DS</b>) collections of time stamped 3D raster maps.</li>
+        <li>Space time vector datasets (<b>STVDS</b>) collections of time stamped vector maps.</li>
+    </ul>
+	
+	<h4>Spatio-temporal modules</h4>
+	<ul>
+		<li><b>t.*</b>: General modules to handle STDS of all types</li>
+		<li><b>t.rast.*</b>: Modules that specifically deal with STRDS</li>
+		<li><b>t.rast3d.*</b>: Modules that specifically deal with STR3DS</li>
+		<li><b>t.vect.*</b>: Modules that specifically deal with STVDS</li>
+	</ul>
+    
+    <h4>Workflow overview</h4>
+    Now, <b>how do we work with time series in GRASS GIS?</b> 
+    <p>
+    Assuming we already have our maps in the GRASSDBASE (i.e., grassdata/location/mapset), the first step is to <b>set the connection to the temporal database</b>. This is something we need to do <i>only once per mapset</i>. After that, we create the STDS, i.e. the container tables for the time series, and finally we assign time stamps to maps and register them in the STDS. After these basic and necesary steps, the rest will depend on our specific objectives. Here's a (non-exhaustive) list of different tasks and the corresponding TGRASS modules to achieve them:
+    <ol>
+        <li>Set and connect the temporal database (mapset specific): 
+        <a href="https://grass.osgeo.org/grass72/manuals/t.connect.html" target="_blank">t.connect</a></li>
+        <li>Create the STDS (raster, vector or raster 3D): 
+        <a href="https://grass.osgeo.org/grass72/manuals/t.create.html" target="_blank">t.create</a></li>
+        <li>Assign time stamps to maps and register them in the STDS: 
+        <a href="https://grass.osgeo.org/grass72/manuals/t.register.html" target="_blank">t.register</a></li>
+        <li>Check basic info, integrity and validity of STDS:
+            <a href="https://grass.osgeo.org/grass72/manuals/t.list.html" target="_blank">t.list</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.info.html" target="_blank">t.info</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.topology.html" target="_blank">t.topology</a>
+        </li>
+        <li>Edit, update, unregister, remove maps and/or STDS: 
+            <a href="https://grass.osgeo.org/grass72/manuals/t.rename.html" target="_blank">t.rename</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.remove.html" target="_blank">t.remove</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.support.html" target="_blank">t.support</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.unregister.html" target="_blank">t.unregister</a>
+        </li>
+        <li>List maps, make selections, get univariate statistics:
+            <a href="https://grass.osgeo.org/grass72/manuals/t.rast.list.html" target="_blank">t.rast.list</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.vect.list.html" target="_blank">t.vect.list</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.select.html" target="_blank">t.select</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.rast.extract.html" target="_blank">t.rast.extract</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.vect.extract.html" target="_blank">t.vect.extract</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.rast.univar.html" target="_blank">t.rast.univar</a>,
+            <a href="https://grass.osgeo.org/grass72/manuals/t.vect.univar.html" target="_blank">t.vect.univar</a>
+        </li>
+        <li>Spatio-temporal processing:
+            <ul>
+                <li>data aggregation: 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.series.html" target="_blank">t.rast.series</a>,
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.aggregate.html" target="_blank">t.rast.aggregate</a>,
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.aggregate.ds.html" target="_blank">t.rast.aggregate.ds</a>
+                </li>
+                <li>data accumulation: 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.accumulate.html" target="_blank">t.rast.accumulate</a>, 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.accumulate.html" target="_blank">t.rast.accumulate</a>,
+                </li>
+                <li>gap-filling and spatial smoothing: 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.gapfill.html" target="_blank">t.rast.gapfill</a>, 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.neighbors.html" target="_blank">t.rast.neighbors</a>
+                </li>
+                <li>spatio-temporal algebra: 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.mapcalc.html" target="_blank">t.rast.mapcalc</a>, 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.rast.algebra.html" target="_blank">t.rast.algebra</a>, 
+                <a href="https://grass.osgeo.org/grass72/manuals/t.vect.algebra.html" target="_blank">t.vect.algebra</a>
+                </li>
+            </ul>
+        </li>
+        <li>Visualization: 
+        <a href="https://grass.osgeo.org/grass72/manuals/g.gui.timeline.html" target="_blank">g.gui.timeline</a>,
+        <a href="https://grass.osgeo.org/grass72/manuals/g.gui.tplot.html" target="_blank">g.gui.tplot</a>,
+        <a href="https://grass.osgeo.org/grass72/manuals/g.gui.animation.html" target="_blank">g.gui.animation</a>,
+        <a href="https://grass.osgeo.org/grass72/manuals/g.gui.mapswipe.html" target="_blank">g.gui.mapswipe</a>
+        </li>
+    </ol>
+
+    <h2><a id="temporalhands">Hands-on to raster time series processing</a></h2>
+    <p>
+	Download the <code>modis_lst</code> mapset and unzip it within <code>nc_basic_spm_grass7</code>. If you are in a different mapset, change to modis_lst using <code>g.mapset mapset=modis_lst</code>. Once there (you can check with <code>g.mapset -p</code>), first obtain the list of raster maps available using <a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>. Choose one of the LST maps to display either using the GUI or through the <b><i>d.*</i></b> commands in the terminal (HINT: <i>remember to check the computational region if nothing is displayed!</i>). 
+	<p>
+	We will now add different map decorations, but first, let's change the color palette from <i>grey</i> to <i>viridis</i> and set the computational region to the state of North Carolina (using <tt>boundary_state</tt> vector map).</p>
+    <p>
+    <pre>
+        <code class="neutral">
+r.colors map=MOD11B3.A2015060.h11v05.single_LST_Day_6km color=viridis
+g.region -p vector=boundary_state
+        </code>
+        <code class="bash">
+# Change color palette from grey to viridis
+r.colors map=MOD11B3.A2015060.h11v05.single_LST_Day_6km color=viridis
+
+# Set region to NC (g.region -d)
+g.region -p vector=boundary_state
+
+# Optionally, to the full extent of one of the raster maps
+g.region -p raster=MOD11B3.A2015060.h11v05.single_LST_Day_6km
+        </code>
+        <code class="python">
+# Change color palette from grey to viridis
+gmod.Module("r.colors", map="MOD11B3.A2015060.h11v05.single_LST_Day_6km", color="viridis")
+
+# Set region to NC
+gmod.Module("g.region", flags="p", vector="boundary_state")
+
+# Optionally, to the full extent of one of the raster maps
+gmod.Module("g.region", flags="p", raster="MOD11B3.A2015060.h11v05.single_LST_Day_6km")
+        </code>
+    </pre>
+    <p>
+	Now, to display a raster map and add decorations, we can run the commands from the command line or use the main GUI and copy the corresponding commands for future replication of the workflow. Note the <i>"Copy"</i> button in the GUI of each module. Maybe you might want to get help about the options and flags of the different commands, e.g. <code>d.rast --help</code></p>
+    <pre>
+        <code class="neutral">
+# Open a monitor
+d.mon wx0
+
+# Display a raster map
+d.rast map=MOD11B3.A2015060.h11v05.single_LST_Day_6km
+
+# Display a vector map
+d.vect map=boundary_state type=boundary
+
+# Add raster legend
+d.legend -t -s -b raster=MOD11B3.A2015060.h11v05.single_LST_Day_6km \
+ title=LST title_fontsize=20 font=sans fontsize=18
+
+# Add scale bar
+d.barscale length=200 units=kilometers segment=4 fontsize=14
+
+# Add North arrow
+d.northarrow style=1b text_color=black
+
+# Add text
+d.text -b text="LST Day from MOD11B3.006 - North Carolina - March, 2015" \
+ color=black bgcolor=229:229:229 align=cc font=sans size=8
+        </code>
+<!--
+        <code class="gui">
+        <video controls>
+			<source src="images/gui_display_map.ogg" type="video/ogg">
+		</video>
+		</code>
+-->
+    </pre>
+    <p style="text-align:center">
+    <div class="imagebox">
+        <img style="width: 50%;" src="images/mod11b3_nc.png" alt="display LST map with decorations" title="display LST map with decorations"><br>
+        MODIS LST map with decorations (scaled Kelvin pixel values)
+    </div></p>
+	<p>
+	For simplicity reasons, we do not show in this example how to download, convert, reproject and import the MODIS LST products, but if you are interested in these particular steps you can check <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.html" target="_blank">r.modis</a>, <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.download.html" target="_blank">r.modis.download</a> and <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.import.html" target="_blank">r.modis.import</a>. These are two GRASS GIS add-ons that by means of the <a href="http://www.pymodis.org/" target="_blank">pymodis</a> python library allow you to download MODIS data from LP DAAC, mosaic tiles, convert from HDF to other formats, reproject and import the data into GRASS GIS. To install these add-ons you just need to run <code>g.extension r.modis</code>. To work with them, make sure you have the <em>pymodis library</em> installed.</p>
+	
+    <h4>Create temporal raster dataset (STRDS)</h4>
+    <p>
+    To create a space-time raster data set (STRDS) implies to create an SQLite table in the temporal database. This table will hold our raster time series and will allow us to easily handle huge amounts of maps by only using the STRDS as input in temporal commands.</p>
+    <p>
+    If this is the first time you use the temporal framework, you need to create and set the connection to the temporal database by means of <a href="https://grass.osgeo.org/grass72/manuals/t.connect.html" target="_blank">t.connect</a>. As the temporal database is mapset specific, you'll need to repeat this step in each mapset in which you'll have STDSs, but it is only needed once per mapset.</p>
+    <p>
+    For the creation of any STDS we use <a href="https://grass.osgeo.org/grass72/manuals/t.create.html" target="_blank">t.create</a>. We need to specify which <b>type of maps</b> (raster, raster3d or vector) the STDS will contain and which <b>type of time</b> (absolute or relative) the maps represent. Absolute time is that of the Gregorian calendar (e.g., 1981-12-23 23:30:00) and relative time is represented by an integer and a time unit (e.g., 10 seconds, 1 day, 3 months). After creating the container SQLite table, we will check if the STRDS is in the database and obtain information about it.</p> 
+    <pre>
+        <code class="neutral">
+t.connect -d
+t.create type=strds temporaltype=absolute output=LST_Day_monthly title="Monthly LST Day 5.6 km" description="Monthly LST Day 5.6 km MOD11B3.006, 2015-2016"
+t.list type=strds
+t.info input=LST_Day_monthly
+        </code>
+        <code class="bash">
+# Create the temporal db connection
+t.connect -d
+
+# Create the STRDS
+t.create type=strds temporaltype=absolute output=LST_Day_monthly \
+ title="Monthly LST Day 5.6 km" \
+ description="Monthly LST Day 5.6 km MOD11B3.006, 2015-2016"
+
+# Check if the STRDS is created
+t.list type=strds
+
+# Get info about the STRDS
+t.info input=LST_Day_monthly
+        </code>
+        <code class="python">
+import grass.temporal as tgis
+
+# Create the temporal db connection using temporal library
+gmod.Module("t.connect", flags="d")
+
+# Initialize the temporal library
+tgis.init()
+
+# Create the new STRDS
+tgis.open_new_stds("LST_Day_monthly", "strds", "absolute", "Monthly LST Day 5.6 km",
+                   "Monthly LST Day 5.6 km MOD11B3.006, 2015-2016", "mean", None, False)
+# Connect to the SQL database interface
+dbif = tgis.SQLDatabaseInterfaceConnection()
+dbif.connect()
+
+# Get and print the list of temporal dataset
+stds_list = tgis.get_dataset_list("strds", "absolute", dbif=dbif)
+print(stds_list)
+
+# Get and print info about the created strds
+dataset = tgis.dataset_factory("strds", "LST_Day_monthly@modis_lst")
+dataset.select(dbif)
+dataset.print_info()
+        </code>
+    </pre>
+    <p>
+	The next step is to assign time stamps to maps and add them to the STRDS, i.e. <i>register</i> the maps in the STRDS. To register maps in a STDS, we need to pass the empty STDS as input, the list of maps to be registered, the start date and increment options along with the <tt>-i</tt> flag for interval creation. There are different ways to register maps in STDS. For more options, you can check the <a href="https://grass.osgeo.org/grass72/manuals/t.register.html" target="_blank">t.register</a> manual and the related <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing/maps_registration" target="_blank">map registration wiki</a> page. Note that back ticks won't work under MS Windows. The workaround is to save the map names list in a text file beforehand.</p> 
+    <pre>
+        <code class="neutral">
+# in Unix systems
+t.register -i input=LST_Day_monthly maps=`g.list type=raster pattern=MOD11B3*LST_Day* separator=comma` start="2015-01-01" increment="1 months"
+
+# in MS Windows, first create the list of maps
+g.list type=raster pattern=MOD11B3*LST_Day* output=map_list.txt
+t.register -i input=LST_Day_monthly file=map_list.txt start="2015-01-01" increment="1 months"
+        </code>
+        <code class="bash">
+# Register maps in STRDS
+t.register -i input=LST_Day_monthly \
+ maps=`g.list type=raster pattern=MOD11B3*LST_Day* separator=comma` \
+ start="2015-01-01" increment="1 months"
+        </code>
+        <code class="python">
+<!--
+# Register maps using the Python function
+gmod.Module("t.register", input="LST_Day_monthly@modis_lst",
+            file=os.path.join(HOME, 'lst_monthly', 'monthly_lst_to_register.txt'))
+-->
+        </code>
+    </pre>
+    <p>
+	Let's check again the basic info to see how it looks like and then list the raster maps in our <tt>LST_Day_monthly</tt> STRDS:</p>
+    <pre>
+        <code class="neutral">
+t.info LST_Day_monthly
+t.rast.list LST_Day_monthly
+        </code>
+        <code class="bash">
+# Check info
+t.info LST_Day_monthly
+
+# Check the list of maps in the STRDS
+t.rast.list LST_Day_monthly
+        </code>
+        <code class="python">
+# Get info using the modules
+gmod.Module("t.info", input="LST_Day_monthly")
+
+# Get list of raster using the Python library
+tgis.list_maps_of_stds("strds", "LST_Day_monthly@modis_lst", "name,mapset,start_time,end_time",
+                       "start_time", "", "|", "cols", True, "no")
+        </code>
+    </pre>
+
+    <h4><a name="temporal_analysis" >Temporal data analysis</a></h4>
+    <p>
+	One basic but very important function when handling hundreds or thousands of maps is the listing function, i.e. we usually need to list maps  meeting a certain condition. For example, we need maps which start month is June, maps with minimum values lower than 100, and so on. The GRASS GIS Temporal framework has different commands for that task: <a href="https://grass.osgeo.org/grass72/manuals/t.list.html" target="_blank">t.list</a> for listing STDS and maps registered in the temporal database, <a href="https://grass.osgeo.org/grass72/manuals/t.rast.list.html" target="_blank">t.rast.list</a> for maps in raster time series and, <a href="https://grass.osgeo.org/grass72/manuals/t.vect.list.html" target="_blank">t.vect.list</a> for maps in vector time series. All these commands allow us to list STDSs and/or maps according to different criteria. Let's see some examples:</p>
+    <pre>
+        <code class="neutral">
+# Maps with minimum value lower than or equal to 14000
+t.rast.list input=LST_Day_monthly order=min columns=name,start_time,min where="min <= '14000'"
+# Maps with maximum value higher than 14000
+t.rast.list input=LST_Day_monthly order=max columns=name,start_time,max where="max > '14000'"
+# Maps between two given dates
+t.rast.list input=LST_Day_monthly columns=name,start_time where="start_time >= '2015-05' and start_time <= '2015-08-01 00:00:00'"
+# Maps from January
+t.rast.list input=LST_Day_monthly columns=name,start_time where="strftime('%m', start_time)='01'"
+# Maps from June, 1st
+t.rast.list input=LST_Day_monthly columns=name,start_time where="strftime('%m-%d', start_time)='06-01'"
+        </code>
+    </pre>
+    <p>
+	MODIS provides LST productus as &deg;K*50. We will re-scale the data to &deg;C and set a proper color palette for the STRDS (HINT: <a href="https://grass.osgeo.org/grass72/manuals/t.rast.colors.html" target="_blank">t.rast.colors</a>).</p>
+    <p>
+	To transform all the maps in our <tt>LST_Day_monthly</tt> time series into &deg;C we will use the <a href="https://grass.osgeo.org/grass72/manuals/t.rast.mapcalc.html" target="_blank">t.rast.mapcalc</a> module. This module allows us to perform spatio-temporal operations with maps in STRDS.</p>
+    <pre>
+        <code class="neutral">
+t.rast.mapcalc input=LST_Day_monthly output=LST_Day_monthly_celsius basename=LST_Day_monthly_celsius expression="LST_Day_monthly * 0.02 - 273.15"
+		</code>
+		<code class="bash">
+# Re-scale data into degrees Celsius
+t.rast.mapcalc input=LST_Day_monthly output=LST_Day_monthly_celsius \
+ basename=LST_Day_monthly_celsius \
+ expression="LST_Day_monthly * 0.02 - 273.15"
+		</code>
+		<code class="python">
+<!--
+TODO
+-->
+		</code>
+    </pre>
+    <div class="imagebox">
+        <img style="width: 50%;" src="images/lst_modis_celsius.png" alt="LST MODIS in degrees Celsius" title="LST MODIS in degrees Celsius"><br>
+        MODIS LST re-scaled to degrees Celsius
+    </div>
+    <p>
+	Alternatively, we could have used <a href="https://grass.osgeo.org/grass72/manuals/t.rast.algebra.html" target="_blank">t.rast.algebra</a> to perform the previous transformation. This module allows us to perform a very wide variety of operations in the temporal and spatial domains, as well as much of the more <i>"classical"</i> operations already available in <a href="https://grass.osgeo.org/grass72/manuals/r.mapcalc.html" target="_blank">r.mapcalc</a>. The command would look like this:</p>
+    <pre>
+        <code class="neutral">
+t.rast.algebra basename=LST_Day_monthly_celsius expression="LST_Day_monthly_celsius = LST_Day_monthly * 0.02 - 273.15"
+        </code>
+        <code class="bash">
+t.rast.algebra basename=LST_Day_monthly_celsius \
+ expression="LST_Day_monthly_celsius = LST_Day_monthly * 0.02 - 273.15"
+        </code>
+        <code class="python">
+gmod.Module("t.rast.algebra", basename="LST_Day_monthly_celsius",
+             expression="LST_Day_monthly_celsius = LST_Day_monthly * 0.02 - 273.15")
+        </code>
+	</pre>
+    <p>
+	To explore a bit more our time series, we will obtain descriptive statistics for the maps in the STRDS by means of <a href="https://grass.osgeo.org/grass72/manuals/t.rast.univar.html" target="_blank">t.rast.univar</a>. There's also the possibility to obtain extended statistics such as first quartile, median value, third quartile and percentile 90 by setting the <tt>-e</tt> flag. Let's see:</p>
+    <pre>
+        <code class="neutral">
+t.rast.univar input=LST_Day_monthly_celsius
+t.rast.univar -e input=LST_Day_monthly_celsius
+t.rast.univar input=LST_Day_monthly_celsius separator=comma output=stats_LST_Day_monthly_celsius.csv
+        </code>
+        <code class="bash">
+# Print univariate stats for maps within STRDS
+t.rast.univar input=LST_Day_monthly_celsius
+
+# Get extended statistics
+t.rast.univar -e input=LST_Day_monthly_celsius
+
+# Write the univariate stats output to a csv file
+t.rast.univar input=LST_Day_monthly_celsius separator=comma output=stats_LST_Day_monthly_celsius.csv
+        </code>
+        <code class="python">
+# Print univarite statistics with the Python library
+tgis.print_gridded_dataset_univar_statistics("strds", "LST_Day_monthly_celsius@modis_lst", None, None, False, False, ",", False)
+
+# Print extended univarite statistics with the Python library
+tgis.print_gridded_dataset_univar_statistics("strds", "LST_Day_monthly_celsius@modis_lst", None, None, True, False, ",", False)
+        </code>
+    </pre>
+
+    <h4>Temporal aggregations</h4>
+    <p>
+	There are basically two dedicated modules to perform temporal aggregations in GRASS GIS. The first one that we will use is <a href="https://grass.osgeo.org/grass72/manuals/t.rast.series.html" target="_blank">t.rast.series</a>. This module is a wrapper for <a href="https://grass.osgeo.org/grass72/manuals/r.series.html" target="_blank">r.series</a> and allows us to aggregate our STRDS or parts of it with different methods. We will use it now to obtain the absolute maximum LST in the past two years.</p>
+    <pre>
+        <code class="neutral">
+t.rast.series input=LST_Day_monthly_celsius output=LST_Day_max method=maximum
+r.colors map=LST_Day_max color=celsius
+d.mon wx0
+d.rast LST_Day_max
+d.vect map=boundary_state type=boundary
+d.legend -t -s -b raster=LST_Day_max title=LST title_fontsize=20 font=sans fontsize=18
+d.barscale length=200 units=kilometers segment=4 fontsize=14
+d.northarrow style=1b text_color=black
+d.text -b text="Maximum LST in the period 2015-2016 - North Carolina" color=black bgcolor=229:229:229 align=cc font=sans size=8
+        </code>
+        <code class="bash">
+# Get maximum LST in the STRDS
+t.rast.series input=LST_Day_monthly_celsius \
+ output=LST_Day_max method=maximum
+
+# Change color pallete to celsius
+r.colors map=LST_Day_max color=celsius
+
+# Display the new map
+d.mon wx0
+d.rast LST_Day_max
+d.vect map=boundary_state type=boundary
+d.legend -t -s -b raster=LST_Day_max \
+ title=LST title_fontsize=20 font=sans fontsize=18
+d.barscale length=200 units=kilometers segment=4 fontsize=14
+d.northarrow style=1b text_color=black
+d.text -b text="Maximum LST in the period 2015-2016 - North Carolina" \
+ color=black bgcolor=229:229:229 align=cc font=sans size=8
+        </code>
+        <code class="python">
+# Get maximum LST in the STRDS
+gmod.Module("t.rast.series", input="LST_Day_monthly_celsius",
+            output="LST_Day_max", method="maximum")
+
+# Change color pallete to celsius
+gmod.Module("r.colors", map="LST_Day_max", color="celsius")
+        </code>
+    </pre>
+    <div class="imagebox">
+        <img style="width: 50%;" src="images/max_lst.png" alt="Maximum LST 2015-2016" title="Maximum LST 2015-2016"><br>
+        Maximum LST in the period 2015-2016 in North Carolina
+    </div>
+    </pre>
+    <p>
+	Now, by means of the spatio-temporal map calculator, we will get the month in which the absolute maximum LST occurred. For that, we will first compare our <tt>LST_Day_monthly_celsius</tt> STRDS with the map of absolute maximum LST <tt>LST_Day_max</tt> that we just obtained before. If they coincide, we keep the month for that pixel, otherwise it will be NULL. Then, we aggregate the resulting <tt>month_max_lst</tt> STRDS with <tt>t.rast.series method=maximum</tt> and we get the map with the pixelwise month in which the absolute maximum LST has occurred in the past two years. Finally, we remove the intermediate STRDS, since we are only interested in the aggregated map.</p>
+    <pre>
+        <code class="neutral">
+t.rast.mapcalc -n inputs=LST_Day_monthly_celsius output=month_max_lst expression="if(LST_Day_monthly_celsius == LST_Day_max, start_month(), null())" basename=month_max_lst
+t.rast.series input=month_max_lst method=maximum output=max_lst_date
+t.remove -rf inputs=month_max_lst
+        </code>
+        <code class="bash">
+# New strds with month of overall maximum
+t.rast.mapcalc -n inputs=LST_Day_monthly_celsius output=month_max_lst \
+ expression="if(LST_Day_monthly_celsius == LST_Day_max, start_month(), null())" \
+ basename=month_max_lst
+
+# Get basic info
+t.info month_max_lst
+
+# Map with month of overall maximum
+t.rast.series input=month_max_lst method=maximum output=max_lst_date
+
+# Remove month_max_lst strds (we were only interested in the resulting aggregated map)
+t.remove -rf inputs=month_max_lst
+        </code>
+        <code class="python">
+# New strds with month of overall maximum
+gmod.Module("t.rast.mapcalc", flags="n", inputs="LST_Day_monthly_celsius", output="month_max_lst",
+            expression="if(LST_Day_monthly_celsius == LST_Day_max, start_month(), null())",
+            basename="month_max_lst")
+
+# Map with month of overall maximum
+gmod.Module("t.rast.series", input="month_max_lst", method="maximum", output="max_lst_date")
+
+# Remove month_max_lst strds
+gmod.Module("t.remove", flags="rf", inputs="month_max_lst")
+        </code>
+    </pre>
+    <p>
+	Note that the flags <tt>"-rf"</tt> force (immediate) removal of both the STRDS (i.e.: the container table) and the maps registered in it.</p>
+    <p>
+	Finally, we display the resulting map:</p>
+    <pre>
+        <code class="neutral">
+d.mon wx0
+d.rast max_lst_date
+d.vect map=boundary_state type=boundary
+d.legend -t -s -b raster=max_lst_date title=LST title_fontsize=20 font=sans fontsize=18
+d.barscale length=200 units=kilometers segment=4 fontsize=14
+d.northarrow style=1b text_color=black
+d.text -b text="Month of maximum LST 2015-2016" color=black bgcolor=229:229:229 align=cc font=sans size=8
+        </code>
+    </pre>
+    <div class="imagebox">
+        <img style="width: 50%;" src="images/month_max_lst.png" alt="Month of maximum LST" title="Month of maximum LST"><br>
+        Month of maximum LST for the period 2015-2016
+    </div>
+    <p>
+	The other module that allows us to perform temporal aggregations is <a href="https://grass.osgeo.org/grass72/manuals/t.rast.aggregate.html" target="_blank">t.rast.aggregate</a>. With this module we are able to aggregate raster maps in our STRDS with different granularities. Note that this module also has the option <tt>where</tt> that allows us to set specific dates for the aggregation. We will use this module to get 3-month average LST. You should remember how to get general info of the newly created STRDS and the list of maps in it with start and end times. What have changed?</p>
+    <pre>
+        <code class="neutral">
+t.rast.aggregate input=LST_Day_monthly_celsius output=LST_Day_mean_3month basename=LST_Day_mean_3month suffix=gran method=average granularity="3 months"
+        </code>
+        <code class="bash">
+# 3-month mean LST
+t.rast.aggregate input=LST_Day_monthly_celsius \
+ output=LST_Day_mean_3month \
+ basename=LST_Day_mean_3month suffix=gran \
+ method=average granularity="3 months"
+        </code>
+        <code class="python">
+# 3-month mean LST
+gmod.Module("t.rast.aggregate", input="LST_Day_monthly_celsius", output="LST_Day_mean_3month",
+            basename="LST_Day_mean_3month", suffix="gran", method="average", granularity="3 months")
+        </code>
+    </pre>
+    <p>
+	A very common task is to extract raster data to vector points (check <a href="https://grass.osgeo.org/grass72/manuals/t.rast.what.html" target="_blank">t.rast.what</a>). However, we may also be interested in getting spatially aggregated time series data for polygons. There's a GRASS GIS add-on for this: <a href="https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html" target="_blank">v.strds.stats</a>. It calculates zonal statistics of each raster in a STRDS and writes the output to the attribute table of a new polygon vector map.<br><br>
+	We first install the add-on by means of <a href="https://grass.osgeo.org/grass72/manuals/g.extension.html">g.extension</a>. Then, we extract the average, minimum and maximum monthly LST for the different geologic types in North Carolina and save it to a text file.</p>
+    <pre>
+        <code class="neutral">
+g.extension v.strds.stats
+v.strds.stats input=geology strds=LST_Day_monthly_celsius output=geology_aggr_lst method=average,minimum,maximum
+v.db.select map=geology_aggr_lst file=ts_polygons.csv
+        </code>
+        <code class="bash">
+# Install v.strds.stats add-on
+g.extension v.strds.stats
+
+# Extract mean, max and min LST for municipalities
+v.strds.stats input=geology strds=LST_Day_monthly_celsius \
+ output=geology_aggr_lst method=average,minimum,maximum
+
+# Save the attribute table of the new vector into a csv file
+v.db.select map=geology_aggr_lst file=ts_polygons.csv
+        </code>
+        <code class="python">
+# Install v.strds.stats add-on
+gmod.Module("g.extension", extension="v.strds.stats")
+
+# Extract mean, max and min LST for municipalities
+gmod.Module("v.strds.stats", input="geology", output="geology_aggr_lst",
+            strds="LST_Day_monthly_celsius", method="average,minimum,maximum")
+
+# Save the attribute table of the new vector into a csv file
+gmod.Module("v.db.select", map="geology_aggr_lst", file="ts_polygons.csv")
+        </code>
+    </pre>
+    </p>
+    <h4>Temporal data visualization</h4>
+    <p>
+	Finally, GRASS GIS offers different options to visualize time series data. For this exercise, we will use two of them: <a href="https://grass.osgeo.org/grass72/manuals/g.gui.tplot.html" target="_blank">g.gui.tplot</a> that allows us to to plot the time series of our variable of interest, be it in a STRDS or a STVDS, for a specific point of of our study region. Basically, you need to set the strds or stvds and a pair of X,Y coordinates. The latter can be typed directly, copied from the map display and pasted or directly chosen from the display.</p>
+    <pre>
+        <code class="neutral">
+g.gui.tplot strds=LST_Day_monthly_celsius@modis_lst coordinates=419604.018913,215736.80063
+        </code>
+        <code class="gui">
+1. Select the STRDS.
+2. Type coordinates or select a point in the display (use the arrow at the end of the second line).
+3. Click Draw.
+4. Inspect values for specific dates.
+
+Alternatively, you can adjust the margin settings, zoom in to different parts of the plots and save it.
+    <div class="imagebox">
+        <img style="width: 50%;" src="images/g_gui_tplot_1.png" alt="g.gui.tplot first" title="g.gui.tplot first step"><br>
+        <img style="width: 60%;" src="images/g_gui_tplot_2.png" alt="g.gui.tplot second" title="g.gui.tplot second step"><br>
+        <img style="width: 60%;" src="images/g_gui_tplot_3.png" alt="g.gui.tplot third" title="g.gui.tplot third step"><br>
+        <img style="width: 40%;" src="images/g_gui_tplot_4.png" alt="g.gui.tplot fourth" title="g.gui.tplot fourth step"><br>
+    </div>
+		</code>
+	</pre>
+    <p>
+	Another tool to visualize time series in more dynamic way and that allows us to see changes in space an time simultaneously is <a href="https://grass.osgeo.org/grass72/manuals/g.gui.animation.html" target="_blank">g.gui.animation</a>. It also allows to animate vector time series, as well as lists of raster or vector maps not specifically registered as time series. When executed from command line, options are more limited than when the module is run from the GUI, where it is possible to add different decorations and customize several options.</p>
+    <pre>
+        <code class="neutral">
+g.gui.animation strds=LST_Day_monthly_celsius@modis_lst
+        </code>
+        <code class="gui">
+1. Add a new animation (you can add up to 4 animations).
+2, 3, 4. Add a space time data set (vector or raster) or list of raster or vector maps.
+5. Optionally, add vector maps such as boundaries, points of interest, etc.
+6. Once you finished adding maps and customizing their display, click OK.
+7. Play the animation (note that you can move forwards or backwards, pause, stop, change velocity).
+8. Export the animation.
+9. Add decorations such as text, time stamp, images, if desired.
+10. Select folder and file name (Note that this step slightly varies according to the output format desired).
+11. Click Export.
+    <div class="imagebox">
+        <img style="width: 60%;" src="images/g_gui_animation_1.png" alt="g.gui.animation first" title="g.gui.animation first step"><br>
+        <img style="width: 60%;" src="images/g_gui_animation_2.png" alt="g.gui.animation second" title="g.gui.animation second step"><br>
+        <img style="width: 60%;" src="images/g_gui_animation_3.png" alt="g.gui.animation third" title="g.gui.animation third step"><br>
+        <img style="width: 60%;" src="images/g_gui_animation_4.png" alt="g.gui.animation fourth" title="g.gui.animation fourth step"><br>
+    </div>
+		</code>
+    </pre>
+    
+    <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
+    <h2>Other (very) useful links</h2>
+    <ul>
+        <li>Temporal data processing wiki: <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Temporal_data_processing</a></li>
+        <li>GRASS GIS temporal workshop: <a href="http://ncsu-geoforall-lab.github.io/grass-temporal-workshop/" target="_blank">http://ncsu-geoforall-lab.github.io/grass-temporal-workshop/</a></li>
+        <li>GRASS GIS and R for time series processing: <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing/GRASS_R_raster_time_series_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Temporal_data_processing/GRASS_R_raster_time_series_processing</a></li>
+    </ul>
+    <h2>References</h2>
+    <ul>
+        <li>Gebbert, S., Pebesma, E. (2014). <em>A temporal GIS for field based environmental modeling</em>. Environmental Modelling & Software, 53, 1–12. <a href="https://doi.org/10.1016/j.envsoft.2013.11.001" target="_blank">DOI</a></li>
+        <li>Gebbert, S., Pebesma, E. (2017). <em>The GRASS GIS temporal framework</em>. International Journal of Geographical Information Science 31, 1273-1292. <a href="http://dx.doi.org/10.1080/13658816.2017.1306862" target="_blank">DOI</a></li>
+    </ul>
+    </p>
+    <hr>
+    <p><i>Last changed: ADD DATE</i></p>
+    <p>
+    <a href="http://grass.osgeo.org/grass72/manuals/">GRASS GIS manual main index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/topics.html">Topics index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/keywords.html">Keywords Index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/full_index.html">Full index</a> | 
+    <a href="http://grass.osgeo.org/grass72/manuals/raster.html">Raster index</a> | 
+    <a href="http://grass.osgeo.org/grass72/manuals/vector.html">Vector index</a> |
+    <a href="http://grass.osgeo.org/grass72/manuals/temporal.html">Temporal index</a> |
+    </p>
+    <p>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="ccbysa.png"></a>
+    <br>
+    Hands-on to GIS and RS with GRASS GIS by Veronica Andreo, Sajid Pareeth and Paulo van Breugel is licensed under a <b><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a></b> - Thanks to <a href="http://www4.ncsu.edu/~vpetras/index.html" target="_blank"><b>Vaclav Petras</b></a> for the style.
+    </p>
+</body>
+</html>
