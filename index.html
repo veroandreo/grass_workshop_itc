@@ -333,7 +333,7 @@ r.colors(map=output, color="elevation")
     <h4>QGIS</h4>
     There are two ways to use GRASS GIS and its functionalities in QGIS: through the GRASS GIS plugin and through Processing. In the first case, QGIS works as a GUI for GRASS GIS, and users can process and analyze their data in the GRASS Database with GRASS GIS modules. In the second case some of the GRASS GIS modules are available through Processing toolbox, and it allows to use GRASS functionality with data not necessarily in the GRASS Database.
     <div class="imagebox">
-		<img style="width: 45%;" src="images/grass_processing.png" alt="GRASS modules through Processing Toolbox" title="GRASS modules through Processing Toolbox"><br>
+		<img style="width: 55%;" src="images/grass_processing.png" alt="GRASS modules through Processing Toolbox" title="GRASS modules through Processing Toolbox"><br>
 		GRASS modules through Processing Toolbox
     </div>
 <!--
@@ -355,29 +355,34 @@ r.colors(map=output, color="elevation")
     <h4>WPS - OGC Web Processing Service</h4>
     It is possible to run GRASS GIS modules through the web using the <a href="https://en.wikipedia.org/wiki/Web_Processing_Service" target="_blank">Web Processing Service</a> (WPS is an <a href="https://en.wikipedia.org/wiki/Open_Geospatial_Consortium" target="_blank">OGC</a> standard). The Free and Open Source software <a href="http://zoo-project.org/" target="_blank">ZOO-Project</a> and <a href="http://pywps.org/" target="_blank">PyWPS</a> allow the user to run GRASS GIS commands in a simple way.
 	
-	<h3>Useful commands</h3>
+	<h3>Useful commands and cool stuff</h3>
+	
+	<ul>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.region.html" target="_blank">g.region</a></li>
 <!--
-TODO @Vero
-	g.list
-	g.remove
-	g.region
-	g.mapset/g.mapsets
-	r.info/v.info
+		subsetting? no need to, change the region 
 -->
-	<h3>Getting help</h3>
-<!--
-TODO @Vero
-	for help: g.manual
-	          --help
-	          GUI of each module
-	          wiki
-	          ML
--->
-<!--
-	<h3>Cool tricks</h3>
-	subsetting? no need to, change the region
-	--exec flag
--->
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.mapset.html" target="_blank">g.mapset</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.mapsets.html" target="_blank">g.mapsets</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.remove</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.import.html" target="_blank">r.import</a> and <a  href="https://grass.osgeo.org/grass72/manuals/v.import.html" target="_blank">v.import</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.export.html" target="_blank">r.export</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.export.html" target="_blank">v.export</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.info.html" target="_blank">r.info</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.info.html" target="_blank">v.info</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.null.html" target="_blank">r.null</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/grass7.html" target="_blank">grass72 --exec</a></li>
+	</ul>
+	<h3>HEELP!!</h3>
+	<p>
+	<b>Keep calm</b>... There are multiple sources from where to get help about GRASS GIS:
+	<ul>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.manual.html" target="_blank">g.manual</a>: in the main GUI under Help or just pressing <em>F1</em></li>
+		<li>--help or --h flag after the module name: basic help and description of flags and options available, e.g., <code>g.region --help</code></li>
+		<li>Manual page in the GUI of each module</li>
+		<li><a href="https://grasswiki.osgeo.org/wiki/GRASS-Wiki" target="_blank">GRASS wiki</a>: examples, explanations and help on particular modules or tasks, <a href="https://grasswiki.osgeo.org/wiki/Category:Tutorial" target="_blank">tutorials</a>, applications, news, etc.</li>
+		<li>Collection of <a href="https://grasswiki.osgeo.org/wiki/GRASS_GIS_Jupyter_notebooks" target="_blank">Jupyter/IPhyton notebooks</a> with example workflows for different applications</li>
+		<li>User mailing list: Just <a href="https://lists.osgeo.org/mailman/listinfo/grass-user" target="_blank">subscribe</a> and post or check the <a href="https://lists.osgeo.org/pipermail/grass-user/" target="_blank">archives</a>.</li>
+	</ul>
+
 	<p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
 	<h2><a name="guidedtour">Working with GRASS GIS: A guided tour</a></h2>
 <!--
