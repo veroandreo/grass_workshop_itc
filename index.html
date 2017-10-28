@@ -109,7 +109,7 @@ TODO: @Paulo and @Sajid: please add here links to the data you will use (if need
 	
 	<b>Why this structure?</b>
 	<ul>
-		<li>GRASS has a native format for raster and vector data, therefore they must be imported or linked into a GRASS Location/Mapset.</li>
+		<li>GRASS has a native format for raster and vector data, therefore they must be imported (r|v.import, r.in.gdal, v.in.ogr) or linked (r|v.external) into a GRASS Location/Mapset.</li>
 	</ul>
 	<b>What are the advantages?</b> 
 	<ul>
@@ -358,18 +358,45 @@ r.colors(map=output, color="elevation")
 	<h3>Useful commands and cool stuff</h3>
 	
 	<ul>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.region.html" target="_blank">g.region</a></li>
-<!--
-		subsetting? no need to, change the region 
--->
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.mapset.html" target="_blank">g.mapset</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.mapsets.html" target="_blank">g.mapsets</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.remove</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/r.import.html" target="_blank">r.import</a> and <a  href="https://grass.osgeo.org/grass72/manuals/v.import.html" target="_blank">v.import</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/r.export.html" target="_blank">r.export</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.export.html" target="_blank">v.export</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/r.info.html" target="_blank">r.info</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.info.html" target="_blank">v.info</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/r.null.html" target="_blank">r.null</a></li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/grass7.html" target="_blank">grass72 --exec</a></li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.import.html" target="_blank">r.import</a> and <a  href="https://grass.osgeo.org/grass72/manuals/v.import.html" target="_blank">v.import</a>: import of raster and vector maps with reprojection, subsetting and resampling on the fly.</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>: Lists available GRASS data base files of the user-specified data type optionally using the search pattern. Examples: 
+		<pre><code class="neutral">
+g.list type=vector pattern="r*"
+g.list type=vector pattern="[ra]*"
+g.list type=raster pattern="{soil,landuse}*"
+		</code></pre>
+		</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.region.html" target="_blank">g.region</a>: Manages the boundary definitions and resolution for the computational region. It is especially relevant when generating new raster maps. Example:
+		<pre><code class="neutral">
+Subset a raster map
+# 1. Check region settings
+g.region -p
+# 2. Change region
+g.region n=n-3000 w=w+4000 
+# 3. Subset map
+r.mapcalc "new_elev = elevation"
+r.colors new_elev color=viridis
+# 4. Display maps
+d.mon wx0
+d.rast elevation
+d.rast new_elev
+		</code>
+		<code class="gui"><div class="imagebox">
+		<img style="width: 45%;" src="images/subset.png" alt="Subsetting" title="Subsetting"><br>
+		</div></code></pre>
+		</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.mapset.html" target="_blank">g.mapset</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.mapsets.html" target="_blank">g.mapsets</a>: These modules allow to change mapset and add/remove mapsets from the accessible mapsets (i.e., we add a mapset to the path if we want to read/see maps in that mapset while in another).</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.remove</a>, <a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.rename</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.copy.html" target="_blank">g.copy</a>: These modules remove maps from GRASSDBASE, rename maps and copy maps either in the same mapset or from other mapset.</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.info.html" target="_blank">r.info</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.info.html" target="_blank">v.info</a>: These modules are very useful to get basic info and history about maps.</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/grass7.html" target="_blank">--exec</a> in the grass72 startup command: This new flag allows to run modules or complete workflows written in shell or python without starting GRASS GIS.
+		<pre><code class="neutral">
+# running a module
+grass72 /path/to/grassdata/nc_basic_spm_grass7/PERMANENT/ --exec r.univar map=elevation
+
+# running a script
+grass72 /path/to/grassdata/test1/PERMANENT/ --exec sh test.sh
+		</code></pre>
+		</li>
 	</ul>
 	<h3>HEELP!!</h3>
 	<p>
