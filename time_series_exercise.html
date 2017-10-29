@@ -29,7 +29,6 @@
 	<div class="imagebox">
 		<img style="width: 25%;" src="images/animation_nc_zoom.gif" title="Time series in GRASS GIS">
 	</div>
-
 	<p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;">
 	<h2>Requirements</h2>
 	<p>
@@ -124,11 +123,9 @@
 
     <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;">
     <h2><a id="temporalhands">Hands-on to raster time series processing</a></h2>
-
     <h3>1. Get the data, set the computational region and display a map</h3>
-
     <p>
-	Download the <code>modis_lst</code> mapset and unzip it within <code>nc_basic_spm_grass7</code>. If you are in a different mapset, change to modis_lst using <code>g.mapset mapset=modis_lst</code>. Once there (you can check with <code>g.mapset -p</code>), first obtain the list of raster maps available using <a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>. Choose one of the LST maps to display either using the GUI or through the <b><i>d.*</i></b> commands in the terminal (HINT: <i>remember to check the computational region if nothing is displayed!</i>).
+	Download the <code>modis_lst</code> mapset and unzip it within <code>nc_basic_spm_grass7</code>. If you are in a different mapset, change to modis_lst using <code>g.mapset mapset=modis_lst</code>. Once there (you can check with <code>g.mapset -p</code>), first obtain the list of raster maps available using <a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>. Choose one of the LST maps to display either using the GUI or through the <b><i>d.*</i></b> commands in the terminal (<b>HINT</b>: <i>remember to check the computational region if nothing is displayed!</i>). 
 	<p>
 	We will now add different map decorations, but first, let's change the color palette from <i>grey</i> to <i>viridis</i> and set the computational region to the state of North Carolina (using <tt>boundary_state</tt> vector map).</p>
     <p>
@@ -193,8 +190,7 @@ d.text -b text="LST Day from MOD11B3.006 - North Carolina - March, 2015" \
     </div></p>
 	<p>
 	For simplicity reasons, we do not show in this example how to download, convert, reproject and import the MODIS LST products, but if you are interested in these particular steps you can check <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.html" target="_blank">r.modis</a>, <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.download.html" target="_blank">r.modis.download</a> and <a href="https://grass.osgeo.org/grass72/manuals/addons/r.modis.import.html" target="_blank">r.modis.import</a>. These are two GRASS GIS add-ons that by means of the <a href="http://www.pymodis.org/" target="_blank">pymodis</a> python library allow you to download MODIS data from LP DAAC, mosaic tiles, convert from HDF to other formats, reproject and import the data into GRASS GIS. To install these add-ons you just need to run <code>g.extension r.modis</code>. To work with them, make sure you have the <em>pymodis library</em> installed.</p>
-
-    <h3>Create the temporal raster dataset (STRDS)</h3>
+    <h3>2. Create the temporal raster dataset (STRDS)</h3>
     <p>
     To create a space-time raster data set (STRDS) implies to create an SQLite table in the temporal database. This table will hold our raster time series and will allow us to easily handle huge amounts of maps by only using the STRDS as input in temporal commands.</p>
     <p>
@@ -384,7 +380,6 @@ tgis.print_gridded_dataset_univar_statistics("strds", "LST_Day_monthly_celsius@m
 tgis.print_gridded_dataset_univar_statistics("strds", "LST_Day_monthly_celsius@modis_lst", None, None, True, False, ",", False)
         </code>
     </pre>
-
     <h4>Which was the maximum LST in the past two years?</h4>
     <p>
 	There are basically two dedicated modules to perform temporal aggregations in GRASS GIS. The first one that we will use is <a href="https://grass.osgeo.org/grass72/manuals/t.rast.series.html" target="_blank">t.rast.series</a>. This module is a wrapper for <a href="https://grass.osgeo.org/grass72/manuals/r.series.html" target="_blank">r.series</a> and allows us to aggregate our STRDS or parts of it with different methods. We will use it now to obtain the absolute maximum LST in the past two years.</p>
@@ -433,7 +428,6 @@ gmod.Module("r.colors", map="LST_Day_max", color="celsius")
         Maximum LST in the period 2015-2016 in North Carolina
     </div>
     </pre>
-
     <h4>Which is the month of the maximum LST?</h4>
     <p>
 	Now, by means of the spatio-temporal map calculator, we will get the month in which the absolute maximum LST occurred. For that, we will first compare our <tt>LST_Day_monthly_celsius</tt> STRDS with the map of absolute maximum LST <tt>LST_Day_max</tt> that we just obtained before. If they coincide, we keep the month for that pixel, otherwise it will be NULL. Then, we aggregate the resulting <tt>month_max_lst</tt> STRDS with <tt>t.rast.series method=maximum</tt> and we get the map with the pixelwise month in which the absolute maximum LST has occurred in the past two years. Finally, we remove the intermediate STRDS, since we are only interested in the aggregated map.</p>
@@ -490,7 +484,6 @@ d.text -b text="Month of maximum LST 2015-2016" color=black bgcolor=229:229:229 
         <img style="width: 50%;" src="images/month_max_lst.png" alt="Month of maximum LST" title="Month of maximum LST"><br>
         Month of maximum LST for the period 2015-2016
     </div>
-    
     <h4>From monthly to seasonal LST</h4>
     <p>
 	The other module that allows us to perform temporal aggregations is <a href="https://grass.osgeo.org/grass72/manuals/t.rast.aggregate.html" target="_blank">t.rast.aggregate</a>. With this module we are able to aggregate raster maps in our STRDS with different granularities. Note that this module also has the option <tt>where</tt> that allows us to set specific dates for the aggregation. We will use this module to get 3-month average LST. You should remember how to get general info of the newly created STRDS and the list of maps in it with start and end times. What have changed?</p>
