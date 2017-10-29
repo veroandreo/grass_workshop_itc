@@ -97,7 +97,7 @@
 
     Working with GRASS GIS is not much different than any other GIS. Just a few commonly used terms need to be introduced first.
     <div class="imagebox">
-		<img style="width: 30%;" src="images/start_screen_grass723.png" alt="GRASS start screen" title="GRASS start screen"><br>
+		<img style="width: 40%;" src="images/start_screen_grass723.png" alt="GRASS start screen" title="GRASS start screen"><br>
         GRASS GIS start screen: GRASS database, Location and Mapset wizard
     </div>
 
@@ -340,7 +340,7 @@ r.colors(map=output, color="elevation")
 		</code>
     </pre>
     <h4>QGIS</h4>
-    There are two ways to use GRASS GIS and its functionalities in QGIS: through the GRASS GIS plugin and through Processing. In the first case, QGIS works as a GUI for GRASS GIS, and users can process and analyze their data in the GRASS Database with GRASS GIS modules. In the second case some of the GRASS GIS modules are available through Processing toolbox, and it allows to use GRASS functionality with data not necessarily in the GRASS Database.
+    There are two ways to use GRASS GIS and its functionalities in QGIS: through the <a href="https://docs.qgis.org/2.18/en/docs/user_manual/grass_integration/grass_integration.html" target="_blank">GRASS GIS plugin</a> and through <a href="https://docs.qgis.org/2.18/en/docs/user_manual/processing/toolbox.html">Processing</a> toolbox. In the first case, QGIS works as a GUI for GRASS GIS, and users can process and analyze their data in the GRASS Database with GRASS GIS modules. In the second case some of the GRASS GIS modules are available through Processing toolbox, and it allows to use GRASS functionality with data not necessarily in the GRASS Database.
     <div class="imagebox">
 		<img style="width: 55%;" src="images/grass_processing.png" alt="GRASS modules through Processing Toolbox" title="GRASS modules through Processing Toolbox"><br>
 		GRASS modules through Processing Toolbox
@@ -367,24 +367,44 @@ r.colors(map=output, color="elevation")
 	<h3>Useful commands and cool stuff</h3>
 	
 	<ul>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/r.import.html" target="_blank">r.import</a> and <a  href="https://grass.osgeo.org/grass72/manuals/v.import.html" target="_blank">v.import</a>: import of raster and vector maps with reprojection, subsetting and resampling on the fly.</li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>: Lists available GRASS data base files of the user-specified data type optionally using the search pattern. Examples: 
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.import.html" target="_blank">r.import</a> and <a  href="https://grass.osgeo.org/grass72/manuals/v.import.html" target="_blank">v.import</a>: import of raster and vector maps with reprojection, subsetting and resampling on the fly.
+		<pre><code class="neutral">
+## IMPORT RASTER DATA: SRTM V3 data for NC
+
+# set computational region to e.g. 10m elevation model:
+g.region raster=elevation -p
+ 
+# Import with reprojection on the fly
+r.import input=n35_w079_1arc_v3.tif output=srtmv3_resamp10m resample=bilinear extent=region resolution=region title="SRTM V3 resampled to 10m resolution"
+
+## IMPORT VECTOR DATA
+
+# import SHAPE file, clip to region extent and reproject to current location projection
+v.import input=research_area.shp output=research_area extent=region
+		</code></pre>			
+		</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>: Lists available GRASS data base files of the user-specified data type optionally using the search pattern. 
 		<pre><code class="neutral">
 g.list type=vector pattern="r*"
 g.list type=vector pattern="[ra]*"
 g.list type=raster pattern="{soil,landuse}*"
 		</code></pre>
 		</li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.region.html" target="_blank">g.region</a>: Manages the boundary definitions and resolution for the computational region. It is especially relevant when generating new raster maps. Example:
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.remove</a>, <a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.rename</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.copy.html" target="_blank">g.copy</a>: These modules remove maps from the GRASSDBASE, rename maps and copy maps either in the same mapset or from other mapset. IMPORTANT: Always perform these tasks from within GRASS. Note that g.remove offers the same extra-useful <em>pattern</em> option than g.list</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.region.html" target="_blank">g.region</a>: Manages the boundary definitions and resolution for the computational region. It is especially relevant when generating new raster maps.
 		<pre><code class="neutral">
-Subset a raster map
+## Subset a raster map
+
 # 1. Check region settings
 g.region -p
+
 # 2. Change region
 g.region n=n-3000 w=w+4000 
+
 # 3. Subset map
 r.mapcalc "new_elev = elevation"
 r.colors new_elev color=viridis
+
 # 4. Display maps
 d.mon wx0
 d.rast elevation
@@ -394,16 +414,51 @@ d.rast new_elev
 		<img style="width: 45%;" src="images/subset.png" alt="Subsetting" title="Subsetting"><br>
 		</div></code></pre>
 		</li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.mapset.html" target="_blank">g.mapset</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.mapsets.html" target="_blank">g.mapsets</a>: These modules allow to change mapset and add/remove mapsets from the accessible mapsets (i.e., we add a mapset to the path if we want to read/see maps in that mapset while in another).</li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.remove</a>, <a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" target="_blank">g.rename</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.copy.html" target="_blank">g.copy</a>: These modules remove maps from GRASSDBASE, rename maps and copy maps either in the same mapset or from other mapset.</li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/r.info.html" target="_blank">r.info</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.info.html" target="_blank">v.info</a>: These modules are very useful to get basic info and history about maps.</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.mapset.html" target="_blank">g.mapset</a> and <a href="https://grass.osgeo.org/grass72/manuals/g.mapsets.html" target="_blank">g.mapsets</a>: These modules allow to change mapset and add/remove mapsets from the accessible mapsets list (i.e., we add a mapset to the path if we want to read/see maps in that mapset while in another).
+		<pre><code class="neutral">
+# print current mapset
+g.mapset -p
+
+# change to a different mapset 
+g.mapset mapset=modis_lst
+
+# print mapsets in the search path
+g.mapsets -p
+
+# list available mapsets in the location
+g.mapsets -l
+
+# add mapset to the search path
+g.mapsets mapset=modis_lst operation=add
+		</code></pre>		
+		</li>
+		<li><a href="https://grass.osgeo.org/grass72/manuals/r.info.html" target="_blank">r.info</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.info.html" target="_blank">v.info</a>: These modules are very useful to get basic info and history about maps.
+		<pre><code class="neutral">
+# info for raster map
+r.info elevation
+
+# info for vector map
+v.info nc_state
+
+# history of vector map			
+v.info nc_state -h
+		</code></pre>
+		</li>
 		<li><a href="https://grass.osgeo.org/grass72/manuals/grass7.html" target="_blank">--exec</a> in the grass72 startup command: This new flag allows to run modules or complete workflows written in shell or python without starting GRASS GIS.
 		<pre><code class="neutral">
 # running a module
-grass72 /path/to/grassdata/nc_basic_spm_grass7/PERMANENT/ --exec r.univar map=elevation
+grass72 /path/to/grassdata/nc_spm_08_grass7/PERMANENT/ --exec r.univar map=elevation
 
 # running a script
-grass72 /path/to/grassdata/test1/PERMANENT/ --exec sh test.sh
+grass72 /path/to/grassdata/nc_spm_08_grass7/PERMANENT/ --exec sh test.sh
+
+## test.sh might be as simple as:
+
+#!/bin/bash
+
+g.region -p
+g.list type=raster
+r.info elevation
 		</code></pre>
 		</li>
 	</ul>
