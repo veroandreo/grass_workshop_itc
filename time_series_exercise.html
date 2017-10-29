@@ -34,7 +34,7 @@
 	<p>
 	To do the exercises in this tutorial, there are some requirements. You obviously will need to <a href-"https://grass.osgeo.org/download/software/">install GRASS GIS</a>. You furthermore will need to install the GRASS GIS addon <a href="https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html">v.strds.stats</a> (see the <a href="index.html">GRASS GIS Introduction</a> for details).
 	<p>
-	We will work with the North Carolina dataset (<a href="https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip">download the dataset</a>, 150 MB). In addition, we will use the monthly land surface temperature (LST) from MODIS sensor (MOD11B3.006) for North Carolina (2015-2016) (<a href="https://www.dropbox.com/s/bctjpplr1mathnx/modis_lst.zip?dl=0">dowload ready-to-use mapset</a>)
+	We will work with the North Carolina dataset (<a href="https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip">download the dataset</a>, 150 MB). In addition, we will use the monthly land surface temperature (LST) from MODIS sensor (MOD11B3.006) for North Carolina (2015-2016) (<a href="https://www.dropbox.com/s/xl0jy9v3oe0munl/modis_lst.zip?dl=0">dowload ready-to-use mapset</a>)
 
 	<p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;">
 	<h2><a name="time-series">Basic concepts and workflow overview</a></h2>
@@ -127,19 +127,19 @@
     <p>
 	Download the <code>modis_lst</code> mapset and unzip it within <code>nc_basic_spm_grass7</code>. If you are in a different mapset, change to modis_lst using <code>g.mapset mapset=modis_lst</code>. Once there (you can check with <code>g.mapset -p</code>), first obtain the list of raster maps available using <a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>. Choose one of the LST maps to display either using the GUI or through the <b><i>d.*</i></b> commands in the terminal (<b>HINT</b>: <i>remember to check the computational region if nothing is displayed!</i>). 
 	<p>
-	We will now add different map decorations, but first, let's change the color palette from <i>grey</i> to <i>viridis</i> and set the computational region to the state of North Carolina (using <tt>boundary_state</tt> vector map).</p>
+	We will now add different map decorations, but first, let's change the color palette from <i>grey</i> to <i>viridis</i> and set the computational region to the state of North Carolina (using <tt>nc_state</tt> vector map).</p>
     <p>
     <pre>
         <code class="neutral">
 r.colors map=MOD11B3.A2015060.h11v05.single_LST_Day_6km color=viridis
-g.region -p vector=boundary_state
+g.region -p vector=nc_state
         </code>
         <code class="bash">
 # Change color palette from grey to viridis
 r.colors map=MOD11B3.A2015060.h11v05.single_LST_Day_6km color=viridis
 
 # Set region to NC (g.region -d)
-g.region -p vector=boundary_state
+g.region -p vector=nc_state
 
 # Optionally, to the full extent of one of the raster maps
 g.region -p raster=MOD11B3.A2015060.h11v05.single_LST_Day_6km
@@ -152,7 +152,7 @@ import grass.pygrass.modules as gmod
 gmod.Module("r.colors", map="MOD11B3.A2015060.h11v05.single_LST_Day_6km", color="viridis")
 
 # Set region to NC
-gmod.Module("g.region", flags="p", vector="boundary_state")
+gmod.Module("g.region", flags="p", vector="nc_state")
 
 # Optionally, to the full extent of one of the raster maps
 gmod.Module("g.region", flags="p", raster="MOD11B3.A2015060.h11v05.single_LST_Day_6km")
@@ -169,7 +169,7 @@ d.mon wx0
 d.rast map=MOD11B3.A2015060.h11v05.single_LST_Day_6km
 
 # Display a vector map
-d.vect map=boundary_state type=boundary
+d.vect map=nc_state type=boundary
 
 # Add raster legend
 d.legend -t -s -b raster=MOD11B3.A2015060.h11v05.single_LST_Day_6km \
@@ -399,7 +399,7 @@ t.rast.series input=LST_Day_monthly_celsius output=LST_Day_max method=maximum
 r.colors map=LST_Day_max color=celsius
 d.mon wx0
 d.rast LST_Day_max
-d.vect map=boundary_state type=boundary
+d.vect map=nc_state type=boundary
 d.legend -t -s -b raster=LST_Day_max title=LST title_fontsize=20 font=sans fontsize=18
 d.barscale length=200 units=kilometers segment=4 fontsize=14
 d.northarrow style=1b text_color=black
@@ -416,7 +416,7 @@ r.colors map=LST_Day_max color=celsius
 # Display the new map
 d.mon wx0
 d.rast LST_Day_max
-d.vect map=boundary_state type=boundary
+d.vect map=nc_state type=boundary
 d.legend -t -s -b raster=LST_Day_max \
  title=LST title_fontsize=20 font=sans fontsize=18
 d.barscale length=200 units=kilometers segment=4 fontsize=14
@@ -483,7 +483,7 @@ gmod.Module("t.remove", flags="rf", inputs="month_max_lst")
         <code class="neutral">
 d.mon wx0
 d.rast max_lst_date
-d.vect map=boundary_state type=boundary
+d.vect map=nc_state type=boundary
 d.legend -t -s -b raster=max_lst_date title=LST title_fontsize=20 font=sans fontsize=18
 d.barscale length=200 units=kilometers segment=4 fontsize=14
 d.northarrow style=1b text_color=black
