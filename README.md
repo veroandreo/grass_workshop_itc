@@ -54,7 +54,7 @@ Install with `g.extension name_of_addon`
 ## Data
 
 * [North Carolina location (full dataset, 150Mb)](https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip)
-* [MODIS LST mapset](https://www.dropbox.com/s/bctjpplr1mathnx/modis_lst.zip?dl=0)
+* [MODIS LST mapset](https://www.dropbox.com/s/xl0jy9v3oe0munl/modis_lst.zip?dl=0)
 
 ## Authors
 
