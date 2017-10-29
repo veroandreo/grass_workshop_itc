@@ -145,6 +145,9 @@ g.region -p vector=boundary_state
 g.region -p raster=MOD11B3.A2015060.h11v05.single_LST_Day_6km
         </code>
         <code class="python">
+# Import the needed libraries
+import grass.pygrass.modules as gmod
+
 # Change color palette from grey to viridis
 gmod.Module("r.colors", map="MOD11B3.A2015060.h11v05.single_LST_Day_6km", color="viridis")
 
@@ -220,6 +223,7 @@ t.list type=strds
 t.info input=LST_Day_monthly
         </code>
         <code class="python">
+# Import the needed libraries
 import grass.temporal as tgis
 
 # Create the temporal db connection using temporal library
@@ -231,6 +235,7 @@ tgis.init()
 # Create the new STRDS
 tgis.open_new_stds("LST_Day_monthly", "strds", "absolute", "Monthly LST Day 5.6 km",
                    "Monthly LST Day 5.6 km MOD11B3.006, 2015-2016", "mean", None, False)
+                   
 # Connect to the SQL database interface
 dbif = tgis.SQLDatabaseInterfaceConnection()
 dbif.connect()
@@ -264,11 +269,15 @@ t.register -i input=LST_Day_monthly \
  start="2015-01-01" increment="1 months"
         </code>
         <code class="python">
-<!--
+# Import the needed libraries
+import grass.script as gscript
+
+# List maps
+map_list = gscript.list_grouped(type="raster",pattern="MOD*")['modis_lst']
+
 # Register maps using the Python function
-gmod.Module("t.register", input="LST_Day_monthly@modis_lst",
-            file=os.path.join(HOME, 'lst_monthly', 'monthly_lst_to_register.txt'))
--->
+gmod.Module("t.register", input="LST_Day_monthly@modis_lst", 
+            maps=map_list, start="2015-01-01", increment="1 months", flags="i")
         </code>
     </pre>
     <p>
@@ -329,9 +338,10 @@ t.rast.mapcalc input=LST_Day_monthly output=LST_Day_monthly_celsius \
  expression="LST_Day_monthly * 0.02 - 273.15"
 		</code>
 		<code class="python">
-<!--
-TODO
--->
+gmod.Module("t.rast.mapcalc", flags="n", inputs="LST_Day_monthly", 
+            output="LST_Day_monthly_celsius",
+            expression="LST_Day_monthly * 0.02 - 273.15",
+            basename="LST_Day_monthly_celsius")
 		</code>
     </pre>
     <div class="imagebox">
