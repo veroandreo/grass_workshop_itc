@@ -3,9 +3,9 @@
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>Spatial data analysis with GRASS GIS</title>
+  <title>Working with GRASS GIS: A guided tour</title>
   <meta name="description" content="Exercise on raster time series">
-  <meta name="author" content="Veronica Andreo">
+  <meta name="author" content="Sajid Pareeth">
   <link rel="shortcut icon" href="grass.png">
 
   <script type="text/javascript" src="lib/jquery.js"></script>
@@ -25,8 +25,13 @@
 </head>
 <body>
   <div id="container">
-	<h1>Spatial data analysis with GRASS GIS</h1>
-    <h2><a name="time-series">Basic overview of this session</a></h2>
+	<h1>Working with GRASS GIS: A guided tour</h1>
+     <p style="text-align:center">
+    <div class="imagebox">
+        <img style="width: 40%;" src="images/sp_fig41.png" alt="display difference map" title="display difference map"><br>
+    </div></p>
+	
+    <h2><a name="Guidedtour">Basic overview of this session</a></h2>
     <p>
 	In this session, we will go through the most commonly used spatial analysis techniques in GRASS GIS. The session is a hands-on with a common exercise which covers basic raster processing capabilities of GRASS GIS.
     <p>
@@ -37,7 +42,9 @@
         <li>Zonal statistics: GRASS GIS and R with raster library</li>
         <li>Cluster analysis to classify the European climatic zones</li>
         <li>Linear models in GRASS GIS and R</li>
+<!--
         <li>Interpolation from meteo-stations</li>
+-->
     </ul>
 	
 	<h4>Data</h4>
@@ -270,7 +277,7 @@ r.mask -r
  
      <p style="text-align:center">
     <div class="imagebox">
-        <img style="width: 50%;" src="images/sp_fig3.png" alt="display univar stats" title="display univar stats"><br>
+        <img style="width: 50%;" src="images/sp_fig31.png" alt="display univar stats" title="display univar stats"><br>
         Univariate statistics of annual precipitation (1981 to 2010)
     </div></p>
  
@@ -294,7 +301,7 @@ r.colors raster=diff_1951_1981_2010 color=differences
 <p><b>Task:</b>Visualize the difference map with the legend and compute univariate statistics over The Netherlands.</p>
      <p style="text-align:center">
     <div class="imagebox">
-        <img style="width: 50%;" src="images/sp_fig4.png" alt="display difference map" title="display difference map"><br>
+        <img style="width: 50%;" src="images/sp_fig41.png" alt="display difference map" title="display difference map"><br>
         Difference between precipitation (1951-1980) and (1981-2010)
     </div></p>
 
@@ -419,6 +426,7 @@ r.colors tmean_model_diff_multi color=differences
 <p>Let us now check how to do the same model above using R inside GRASS GIS</p>
 install.packages("rgrass7", dependencies = TRUE)
 -->
+<!--
 <h4>Interpolation in GRASS GIS</h4>
 <p>GRASS GIS offers a wide range of interpolation algorithms. List of interpolation methods available in GRASS GIS are given <a href="https://grasswiki.osgeo.org/wiki/Interpolation" target="_blank">here</a></p>
     <pre>
@@ -477,6 +485,7 @@ r.mask -r
         <img style="width: 50%;" src="images/sp_fig8.png" alt="display spline interpolation" title="display spline interpolation"><br>
         Spline interpolated map of Tmean
     </div></p>
+-->
 
   
     <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
