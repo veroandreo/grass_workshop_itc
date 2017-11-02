@@ -46,19 +46,15 @@ For a quick-start guide, see: https://live.osgeo.org/en/quickstart/osgeolive_qui
 
 ### GRASS GIS Add-ons
 
-* [r.modis.download](https://grass.osgeo.org/grass72/manuals/addons/r.modis.download.html)
-* [r.modis.import](https://grass.osgeo.org/grass72/manuals/addons/r.modis.import.html)
+* Time series exercise: [v.strds.stats](https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html)
+* Spatial interpolation exercise: [r.vif](https://grass.osgeo.org/grass72/manuals/addons/r.vif.html) and [r.learn.ml](https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html)
 
-Install with `g.extension extension=r.modis`.
-
-* [v.strds.stats](https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html) 
-
-Instal with `g.extension v.strds.stats`
+Install with `g.extension name_of_addon`
 
 ## Data
 
-* [North Carolina basic location (50Mb)](https://grass.osgeo.org/sampledata/north_carolina/nc_basic_spm_grass7.tar.gz)
-* [MODIS LST mapset](https://www.dropbox.com/s/bctjpplr1mathnx/modis_lst.zip?dl=0)
+* [North Carolina location (full dataset, 150Mb)](https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip)
+* [MODIS LST mapset](https://www.dropbox.com/s/xl0jy9v3oe0munl/modis_lst.zip?dl=0)
 
 ## Authors
 
