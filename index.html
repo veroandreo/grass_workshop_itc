@@ -232,7 +232,10 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
 	</pre>
 
     <h3>Computational region</h3>
-    The <b>computational region</b> is an important raster concept in GRASS GIS: it is the <i>actual setting of the region boundaries and the actual raster resolution</i>.<br><br>
+    The <b>computational region</b> is a cornerstone concept in GRASS GIS: it is the <i>actual setting of the region boundaries and the actual raster resolution</i>. If you want to be able to use GRASS to its full potential, you have to understand it. In fact, it is so important that you should know about it even if you only plan some light usage of GRASS.
+
+
+    <br><br>
     The raster input maps are automatically (on the fly) cropped/padded and rescaled to match the current region, the output maps have their bounds and resolution equal to those of the current computational region, while vector maps are always considered completely.<br><br>
     Before we use a module to compute a new raster map, we must set properly computational region. All raster computations will be performed in the current region settings, i.e. the current region extent and current raster resolution. If the resolution differs from that of the input raster map(s), on-the-fly resampling is performed (nearest neighbor resampling). If this is not desired, the input map(s) has/have to be resampled beforehand with one of the dedicated modules.<br><br>
     The <b>computational region</b> can be set and changed by means of <a href="https://grass.osgeo.org/grass72/manuals/g.region.html" target="_blank">g.region</a> to the extent of a vector map (e.g. boundary of a state or county), a raster map or manually to some area of interest. Moreover you can save region settings and reload when necessary. Besides, the region settings persist between GRASS sessions and can be different for different mapsets.
@@ -250,9 +253,14 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
 		<li>run different processes in different areas</li>
     </ul>
     </p>
+    <p>
+    A word of caution for new users. Make always sure that the region is set correctly before doing any work on your map. A typical problem of newcomers to GRASS is that they import a map, do some computations, and end up with an empty output layer. This is almost always due to wrong region settings in which the imported map falls outside the area currently covered by the region. For a more detailed explanation of the region and how to work with it, see the Wiki page about the <a href="https://grasswiki.osgeo.org/wiki/Computational_region">Computational region
+    </a>.</p>
 
     <h3>Mask</h3>
-    If a mask is set, raster modules will operate only on data falling inside the masked area(s), i.e. any data falling outside of the mask are treated as if their pixel value were NULL. To set the mask you can use <a href="https://grass.osgeo.org/grass72/manuals/r.mask.html" target="_blank">r.mask</a> or create a raster called <code>MASK</code> (this raster map name is reserved for this purpose).<br>
+    Like the <i>region</i>, the <i>Mask</i> is an important concept in GRASS that you need to understand to use GRASS to its full potential. If a mask is set, raster modules will operate only on data falling inside the masked area(s), i.e. any data falling outside of the mask are treated as if their pixel value were NULL. To set the mask you can use <a href="https://grass.osgeo.org/grass72/manuals/r.mask.html" target="_blank">r.mask</a> or create a raster called <code>MASK</code> (this raster map name is reserved for this purpose). In the latter case, all cells with a value are part of the maked area(s).
+    <br>
+
     <div class="imagebox">
         <img style="width: 30%;" src="images/show_lakes.png" alt="Elevation plus lakes" title="Elevation plus lakes">
         <img style="width: 30%;" src="images/mask_surrounding_lakes.png" alt="Set lakes as mask" title="Set lakes as mask">
@@ -261,11 +269,14 @@ g.extension url=https://github.com/pesekon2/GRASS-GIS-SOS-tools/tree/master/sos/
         By setting the MASK (here based on lakes vector map) only the raster data inside the masked area (lakes) are used for further analysis (center). If we want to mask the lakes and analyze the rest, we create an "inverse" mask (right).
     </div>
 
+    <p>For new users, make always sure you know if/what MASK is set. You can easily check if there is a mask set by checking if there is a layer with the name MASK in your mapset. You can also display the MASK like any other raster layer. For more details about using masks, see the <a href="https://grass.osgeo.org/grass72/manuals/r.mask.html">r.mask manual page</a> and
+    </p>
+
     <h3>Interfaces</h3>
     GRASS GIS offers different interfaces for the interaction between user and software. Let's see them...
 
     <h4>Graphical User Interface (GUI)</h4>
-    The GUI is the simplest way to approach GRASS GIS. It offers a user-friendly approach to executing modules where the user can navigate to data layers that they would like to analyze and modify processing options with simple check boxes. The GUI also offers an easily accessible manual on how to execute a model. 
+    The GUI is the simplest way to approach GRASS GIS. It offers a user-friendly approach to executing modules where the user can navigate to data layers that they would like to analyze and modify processing options with simple check boxes. The GUI also offers an easily accessible manual on how to execute a model.
     The <a href="https://grass.osgeo.org/grass72/manuals/wxGUI.html" target="_blank">GRASS GIS GUI</a> is composed of two elements, the <code>Layer Manager</code> where you can find all the GRASS GIS modules and manage your data and, the <code>Map Display</code> where you can navigate, print and query your maps. The GUI also comes with a Python shell for rapid prototyping.
     <div class="imagebox">
         <img style="width: 70%;" src="images/GUI_description.png" alt="GRASS GIS GUI" title="GRASS GIS GUI"><br>
@@ -363,9 +374,9 @@ r.colors(map=output, color="elevation")
 
     <h4>WPS - OGC Web Processing Service</h4>
     It is possible to run GRASS GIS modules through the web using the <a href="https://en.wikipedia.org/wiki/Web_Processing_Service" target="_blank">Web Processing Service</a> (WPS is an <a href="https://en.wikipedia.org/wiki/Open_Geospatial_Consortium" target="_blank">OGC</a> standard). The Free and Open Source software <a href="http://zoo-project.org/" target="_blank">ZOO-Project</a> and <a href="http://pywps.org/" target="_blank">PyWPS</a> allow the user to run GRASS GIS commands in a simple way.
-	
+
 	<h3>Useful commands and cool stuff</h3>
-	
+
 	<ul>
 		<li><a href="https://grass.osgeo.org/grass72/manuals/r.import.html" target="_blank">r.import</a> and <a  href="https://grass.osgeo.org/grass72/manuals/v.import.html" target="_blank">v.import</a>: import of raster and vector maps with reprojection, subsetting and resampling on the fly.
 		<pre><code class="neutral">
@@ -373,7 +384,7 @@ r.colors(map=output, color="elevation")
 
 # set computational region to e.g. 10m elevation model:
 g.region raster=elevation -p
- 
+
 # Import with reprojection on the fly
 r.import input=n35_w079_1arc_v3.tif output=srtmv3_resamp10m resample=bilinear extent=region resolution=region title="SRTM V3 resampled to 10m resolution"
 
@@ -381,9 +392,9 @@ r.import input=n35_w079_1arc_v3.tif output=srtmv3_resamp10m resample=bilinear ex
 
 # import SHAPE file, clip to region extent and reproject to current location projection
 v.import input=research_area.shp output=research_area extent=region
-		</code></pre>			
+		</code></pre>
 		</li>
-		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>: Lists available GRASS data base files of the user-specified data type optionally using the search pattern. 
+		<li><a href="https://grass.osgeo.org/grass72/manuals/g.list.html" target="_blank">g.list</a>: Lists available GRASS data base files of the user-specified data type optionally using the search pattern.
 		<pre><code class="neutral">
 g.list type=vector pattern="r*"
 g.list type=vector pattern="[ra]*"
@@ -399,7 +410,7 @@ g.list type=raster pattern="{soil,landuse}*"
 g.region -p
 
 # 2. Change region
-g.region n=n-3000 w=w+4000 
+g.region n=n-3000 w=w+4000
 
 # 3. Subset map
 r.mapcalc "new_elev = elevation"
@@ -419,7 +430,7 @@ d.rast new_elev
 # print current mapset
 g.mapset -p
 
-# change to a different mapset 
+# change to a different mapset
 g.mapset mapset=modis_lst
 
 # print mapsets in the search path
@@ -430,7 +441,7 @@ g.mapsets -l
 
 # add mapset to the search path
 g.mapsets mapset=modis_lst operation=add
-		</code></pre>		
+		</code></pre>
 		</li>
 		<li><a href="https://grass.osgeo.org/grass72/manuals/r.info.html" target="_blank">r.info</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.info.html" target="_blank">v.info</a>: These modules are very useful to get basic info and history about maps.
 		<pre><code class="neutral">
@@ -440,7 +451,7 @@ r.info elevation
 # info for vector map
 v.info nc_state
 
-# history of vector map			
+# history of vector map
 v.info nc_state -h
 		</code></pre>
 		</li>
@@ -507,6 +518,8 @@ RS processing
         <li>Temporal data processing wiki: <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Temporal_data_processing</a></li>
         <li>GRASS GIS temporal workshop: <a href="http://ncsu-geoforall-lab.github.io/grass-temporal-workshop/" target="_blank">http://ncsu-geoforall-lab.github.io/grass-temporal-workshop/</a></li>
         <li>GRASS GIS and R for time series processing: <a href="https://grasswiki.osgeo.org/wiki/Temporal_data_processing/GRASS_R_raster_time_series_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Temporal_data_processing/GRASS_R_raster_time_series_processing</a></li>
+        <li>The <a href="https://grass.osgeo.org/grass72/manuals/rasterintro.html">Raster data processing in GRASS GIS</a> Wiki page.</li>
+        <li>The <a href="https://grass.osgeo.org/grass72/manuals/vectorintro.html">Vector data processing in GRASS GIS</a> Wiki page.</li>
     </ul>
     <h2>References</h2>
     <ul>
@@ -528,7 +541,7 @@ RS processing
     <a href="http://grass.osgeo.org/grass72/manuals/temporal.html">Temporal index</a> |
     </p>
     <p>
-    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="ccbysa.png"></a>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/ccbysa.png"></a>
     <br>
     Hands-on to GIS and Remote Sensing with GRASS GIS by Veronica Andreo, Sajid Pareeth and Paulo van Breugel is licensed under a <b><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a></b> - Thanks to <a href="http://www4.ncsu.edu/~vpetras/index.html" target="_blank"><b>Vaclav Petras</b></a> for the style.
     </p>
