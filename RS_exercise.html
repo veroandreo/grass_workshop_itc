@@ -30,13 +30,12 @@
     <div class="imagebox">
         <img style="width: 40%;" src="images/sp_fig10_new.jpg" alt="display composites" title="display composites"><br>
     </div></p>
-	
     <h2><a name="Guidedtour">Basic overview of this session</a></h2>
     <p>
 	In this session, we will go through the pre-processing of Landsat 8 images covering the topics from importing to deriving vegetation indices and unsupervised classification.
     <p>
-     <h4>Course content</h4>
-   <ul>
+    <h4>Course content</h4>
+    <ul>
         <li>Import all the bands</li>
         <li>Digital Number (DN) to Top Of Atmosphere (TOA) reflectance</li>
         <li>Data fusion/Pansharpening</li>
@@ -45,7 +44,6 @@
         <li>Develop vegetation indices</li>
         <li>Unsupervised classification</li>
     </ul>
-	
 	<h4>Data</h4>
 	<p>We will use two Landsat 8 (OLI) scenes clipped to the nc sample data region</p>
 	<ul>
@@ -59,13 +57,12 @@
         Spectral bands of Landsat 8 OLI, (Source: <a href="https://landsat.gsfc.nasa.gov/landsat-data-continuity-mission/" target="_blank">https://landsat.gsfc.nasa.gov/landsat-data-continuity-mission/</a> )
     </div></p>
 	
-		<h4>Data download</h4>
+	<h4>Data download</h4>
 	For this exercise, download the clipped landsat 8 scenes from <a href="http://www.scientificpubs.com/NC_L8_scenes.zip" target="_blank">here</a></li>
-    
     <h4>Workflow overview</h4>
     <b>How do we work with satellite data in GRASS GIS?</b> 
     <p>
-    Assuming we already have our maps in the GRASSDBASE (i.e., grassdata/location/mapset), the first step is to <b>import the datasets to GRASS GIS</b>. 
+    Assuming we do not have our maps in the GRASSDBASE (i.e., grassdata/location/mapset), the first step is to <b>import the datasets to GRASS GIS</b>. 
     <p>
     Here is a list of major GRASS GIS modules we will be using in this exercise and the links to their manuals.
     <p>
@@ -100,7 +97,6 @@
             <a href="https://grass.osgeo.org/grass72/manuals/v.to.rast.html" target="_blank">v.to.rast</a>,
         </li>
     </ol>
-
     <h2><a id="RSanalysis">Remote sensing analysis in GRASS GIS</a></h2>
     <p>
 	Download the shared data and let us create a new mapset in the "nc_spm_08_grass7" location to do further analysis.
@@ -134,10 +130,8 @@ g.list type=rast
 g.region rast=lsat7_2002_20 res=30 -a
         </code>
     </pre>
-    <p>
-	We will now import the landsat 8 raw data to the newly created mapset.
-	</p>
-   <pre>
+    <p>We will now import the landsat 8 raw data to the newly created mapset.</p>
+    <pre>
         <code class="neutral">
 cd $HOME/data_dir/LC80150352016168LGN00
 BASE="LC80150352016168LGN00"
@@ -175,16 +169,15 @@ g.list rast map=. pattern=${BASE}_toar*
 i.landsat.toar input=${BASE}_B output=${BASE}_toar metfile=${BASE}_MTL.txt sensor=oli8
 g.list rast map=. pattern=${BASE}_toar*
         </code>
- </pre>
- <p><b>Task:</b> Repeat the conversion step for the second scene "LC80150352016200LGN00"</p>
- <p><b>Task:</b> Set the color palette of Band 10 of LC80150352016200LGN00 to "kelvin" and visulaize with map features</p>
+   </pre>
+<p><b>Task:</b> Repeat the conversion step for the second scene "LC80150352016200LGN00"</p>
+<p><b>Task:</b> Set the color palette of Band 10 of LC80150352016200LGN00 to "kelvin" and visulaize with map features</p>
  
-     <p style="text-align:center">
+    <p style="text-align:center">
     <div class="imagebox">
         <img style="width: 50%;" src="images/sp_fig9.png" alt="display ST" title="display ST"><br>
         TOA Temperature from band 10 of Landsat 8 dated 18 July 2016
-    </div></p>
- 
+    </div></p> 
 <h4>Data fusion/Pansharpening</h4>
 <p> Now let us use the PAN band 8 (15 m resolution) to downsample other spectral bands to 15 m resolution. We use an addon <a href="https://grass.osgeo.org/grass72/manuals/addons/i.fusion.hpf.html" target="_blank">i.fusion.hpf</a> which applies a high pass filter addition method to down sample. Here we introduce the long list of addons in GRASS GIS and demonstrate how to install and use them. Check <a href="https://grass.osgeo.org/grass72/manuals/g.extension.html" target="_blank">g.extension</a>  to install the addons and <a href="https://grass.osgeo.org/grass72/manuals/addons/" target="_blank">GRASS GIS addons</a> for the list of available addons.</p>
 <pre>
@@ -204,10 +197,10 @@ i.fusion.hpf -l -c pan=${BASE}_toar8 msx=${BASE}_toar1,${BASE}_toar2,${BASE}_toa
 # list the fused maps
 g.list rast map=. pattern=${BASE}_toar*.hpf
         </code>
- </pre>
- <p><b>Task:</b> Repeat the fusion step for the second scene "LC80150352016200LGN00"</p>
+</pre>
+<p><b>Task:</b> Repeat the fusion step for the second scene "LC80150352016200LGN00"</p>
 
- <h4>Image Composites</h4>
+<h4>Image Composites</h4>
 <p> Now create false colour and true colour composite for better visualization</p>
 <pre>
         <code class="neutral">
@@ -237,9 +230,8 @@ r.composite red="${BASE}_toar5.hpf" green="${BASE}_toar4.hpf" blue="${BASE}_toar
         True color and False color composites of the Landsat 8 image dated 18 July 2016
     </div></p>
 
- <h4>Cloud mask from the QA layer</h4>
- <p>Landsat 8 provides quality layer which contains 16bit integer values that represent "bit-packed combinations of surface, atmosphere, and sensor conditions that can affect the overall usefulness of a given pixel".  We can use the addon <a href="https://grass.osgeo.org/grass72/manuals/addons/i.landsat8.qc.html" target="_blank">i.landsat8.qc</a> to develop masks. More information about Landsat 8 quality band is given <a href="http://landsat.usgs.gov/qualityband.php" target="_blank">here</a>.
-</p>
+<h4>Cloud mask from the QA layer</h4>
+<p>Landsat 8 provides quality layer which contains 16bit integer values that represent "bit-packed combinations of surface, atmosphere, and sensor conditions that can affect the overall usefulness of a given pixel".  We can use the addon <a href="https://grass.osgeo.org/grass72/manuals/addons/i.landsat8.qc.html" target="_blank">i.landsat8.qc</a> to develop masks. More information about Landsat 8 quality band is given <a href="http://landsat.usgs.gov/qualityband.php" target="_blank">here</a>.</p>
      <pre>
         <code class="neutral">
 g.region rast=lsat7_2002_20 res=15 -a
@@ -260,15 +252,14 @@ r.reclass input=${BASE}_BQA output=${BASE}_Cloud_Mask rules=Cloud_Mask_rules.txt
 # Report the area covered by Cloud
 r.report -e map=${BASE}_Cloud_Mask units=k -n
         </code>
- </pre>
-
-     <p style="text-align:center">
+    </pre>
+    <p style="text-align:center">
     <div class="imagebox">
         <img style="width: 50%;" src="images/sp_fig11_new.jpg" alt="display cloud mask" title="display cloud mask"><br>
         False color composite and the derived cloud mask of the Landsat 8 image dated 16 June 2016
     </div></p>
 
- <p><b>Task:</b> Visually compare the cloud coverage with the false color composite</p>
+<p><b>Task:</b> Visually compare the cloud coverage with the false color composite</p>
  
 <h4>Vegetation Indices</h4>
 <p>We will compute NDVI and NDWI from the spectral bands using the map calculator</p>.
@@ -305,17 +296,15 @@ r.mask -r
         <img style="width: 50%;" src="images/sp_fig12_new.jpg" alt="display composite" title="display composite"><br>
         False color composite and the derived cloud mask of the Landsat 8 image dated 16 June 2016
     </div></p>
-
 <h4>Unsupervised Classification</h4>
-<p>Now classify the LC80150352016200LGN00 (cloud free) using unsupervised sequential Maxlike algorithm</p>.
- <p>Main steps are:</p>
+<p>Now classify the LC80150352016200LGN00 (cloud free) using unsupervised sequential Maxlike algorithm.</p>
+<p>Main steps are:</p>
    <ul>
         <li>Group the images</li>
         <li>Generate signatures using a clustering algorithm</li>
         <li>Classify using Maximum likelihood algorithm</li>
     </ul>
-
-     <pre>
+    <pre>
         <code class="neutral">
 g.list rast map=. pattern=${BASE}_toar*.hpf
 i.group group=${BASE}_hpf subgroup=${BASE}_hpf input=`g.list rast map=. pattern=${BASE}_toar*.hpf sep=","`
@@ -334,15 +323,13 @@ i.maxlik group=${BASE}_hpf subgroup=${BASE}_hpf sig=${BASE}_hpf output=${BASE}_h
         </code>
  </pre> 
     <p>
-	Check the manual of  <a href="https://grass.osgeo.org/grass72/manuals/i.cluster.html" target="_blank">i.cluster</a> and <a href="https://grass.osgeo.org/grass72/manuals/i.maxlik.html" target="_blank">i.maxlik</a>.
-  
+	Check the manual of  <a href="https://grass.osgeo.org/grass72/manuals/i.cluster.html" target="_blank">i.cluster</a> and <a href="https://grass.osgeo.org/grass72/manuals/i.maxlik.html" target="_blank">i.maxlik</a>.  
     <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;" align="center">
     <h2>Other (very) useful links</h2>
     <ul>
         <li>GRASS GIS wiki: <a href="https://grasswiki.osgeo.org/wiki/GRASS-Wiki" target="_blank">https://grasswiki.osgeo.org/wiki/GRASS-Wiki</a></li>
         <li>Image processing in GRASS GIS: <a href="https://grasswiki.osgeo.org/wiki/Image_processing" target="_blank">https://grasswiki.osgeo.org/wiki/Image_processing</a></li>
-        <li>Image classification in GRASS GIS: <a href="https://grasswiki.osgeo.org/wiki/Image_classification" target="_blank">https://grasswiki.osgeo.org/wiki/Image_classification</a></li>
-        
+        <li>Image classification in GRASS GIS: <a href="https://grasswiki.osgeo.org/wiki/Image_classification" target="_blank">https://grasswiki.osgeo.org/wiki/Image_classification</a></li>    
     </ul>
     <h2>References</h2>
     <ul>
@@ -351,7 +338,6 @@ i.maxlik group=${BASE}_hpf subgroup=${BASE}_hpf sig=${BASE}_hpf output=${BASE}_h
     </ul>
     </p>
     <hr>
-    <p><i>This tutorial is adapted from <a href="https://geostat-course.org/" target="_blank">Geostat</a> exercises prepared by <a href="https://grassbook.org/neteler/" target="_blank">Markus Neteler</a></i> and related content can be found in his <a href="https://courses.neteler.org/blog/" target="_blank">blog</a> . </p>
     <p><i>Last changed: 02 Nov 2017</i></p>
     <p>
     <a href="http://grass.osgeo.org/grass72/manuals/">GRASS GIS manual main index</a> |
@@ -363,7 +349,7 @@ i.maxlik group=${BASE}_hpf subgroup=${BASE}_hpf sig=${BASE}_hpf output=${BASE}_h
     <a href="http://grass.osgeo.org/grass72/manuals/temporal.html">Temporal index</a> |
     </p>
     <p>
-    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="ccbysa.png"></a>
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="images/ccbysa.png"></a>
     <br>
     Hands-on to GIS and RS with GRASS GIS by Veronica Andreo, Sajid Pareeth and Paulo van Breugel is licensed under a <b><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative Commons Attribution-ShareAlike 4.0 International License</a></b> - Thanks to <a href="http://www4.ncsu.edu/~vpetras/index.html" target="_blank"><b>Vaclav Petras</b></a> for the style.
     </p>
