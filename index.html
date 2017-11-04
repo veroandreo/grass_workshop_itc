@@ -54,7 +54,7 @@
         <ul>
 			<li><a href="time_series_exercise.html" target="_blank">Raster time series in GRASS GIS: MODIS Land Surface Temperature</a></li>
 			<li><a href="https://tutorials.ecodiv.earth/toc/spatial_interpolation.html" target="_blank">Spatial interpolation in GRASS GIS</a></li>
-			<li><a href="RS_exercise.html">Remote sensing analysis in GRASS GIS</a></li>
+			<li><a href="RS_exercise.html" target="_blank">Remote sensing analysis in GRASS GIS</a></li>
         </ul>
     </ul>
     <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px; padding_bottom: 5px;" align="center"></p>
@@ -66,27 +66,32 @@
             GRASS GIS 7.2: <a href="https://grass.osgeo.org/download/software/">download</a> | <a href="https://live.osgeo.org/">OSGeo-live</a>
         </li>
     </ul>
-    <b>Time series exercise</b>
+    <b>Raster time series exercise</b>
     <ul>
-        <li>GRASS GIS Add-ons: <a href="https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html">v.strds.stats</a></li>
+        <li>GRASS GIS Add-on: <a href="https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html">v.strds.stats</a></li>
     </ul>
     <b>Spatial interpolation exercise</b>
     <ul>
-        <li>
-            GRASS GIS Add-ons: <a href="https://grass.osgeo.org/grass72/manuals/addons/r.vif.html">r.vif</a>
-        </li>
-        <li>
-            GRASS GIS Add-ons: <a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html">r.learn.ml</a>
-        </li>
-        <li>
-            Python packages "scikit-learn" and "pandas" (see manual page r.learn.ml for details)
-        </li>
+        <li>GRASS GIS Add-on: <a href="https://grass.osgeo.org/grass72/manuals/addons/r.vif.html">r.vif</a></li>
+        <li>GRASS GIS Add-on: <a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html">r.learn.ml</a></li>
+        <li>Python packages "scikit-learn" and "pandas" (see manual page r.learn.ml for details)</li>
+    </ul>
+    <b>Remote sensing analysis exercise</b>
+    <ul>
+		<li>GRASS GIS Add-on: <a href="https://grass.osgeo.org/grass72/manuals/addons/i.fusion.hpf.html" target="_blank">i.fusion.hpf</a></li>
+		<li>GRASS GIS Add-on: <a href="https://grass.osgeo.org/grass72/manuals/addons/i.landsat8.qc.html" target="_blank">i.landsat8.qc</a></li>
     </ul>
     </p>
     <h3>Sample data</h3>
     <ul>
         <li>Main dataset: <a href="https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip">North Carolina location (full data set, 150 MB)</a>
-        <li>extra "mapset" <a href="https://www.dropbox.com/s/xl0jy9v3oe0munl/modis_lst.zip?dl=0"><code>modis_lst</code></a>: monthly land surface temperature (LST) from MODIS sensor (MOD11B3.006) for North Carolina (2015-2016)</li>
+        <li>Guided tour: extra lat-long location <a href="data/grassdata_ecad_LL.zip"><code>ecad_ll</code></a> and extra <a href="data/ecad5_geotiffs_LL.zip">GeoTif maps</a></li>
+        <li>Exercises: 
+        <ul>
+			<li>Raster time series: extra "mapset" <a href="data/modis_lst.zip"><code>modis_lst</code></a>: monthly land surface temperature (LST) from MODIS sensor (MOD11B3.006) for North Carolina (2015-2016)</li>
+			<li>Remote sensing analysis: <a href="data/NC_L8_scenes.zip">Landsat 8 scenes</a> for North Carolina</li>
+        </ul>
+        </li>
     </ul>
     </ul>
     <p style="border-top-style: solid; border-width: 5px; border-color: rgb(130, 130, 130); padding-top: 5px;"></p>

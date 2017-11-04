@@ -5,7 +5,7 @@ This repository was created for a [GRASS GIS](https://grass.osgeo.org/) crash co
 
 ## Software
 
-We will use GRASS GIS 7.2 (current stable version). It can be installed either through standalone installers/binaries or through OSGeo-Live (which includes all OSGeo software and packages).
+We use GRASS GIS 7.2.2 (current stable version). It can be installed either through standalone installers/binaries or through OSGeo-Live (which includes all OSGeo software and packages).
 
 ### Standalone installers for different OS:
 
@@ -38,7 +38,6 @@ For other Linux distros, please find GRASS GIS in their package managers.
 
 [OSGeo-live](https://live.osgeo.org/) is a self-contained bootable DVD, USB thumb drive or Virtual Machine based on Lubuntu, that allows you to try a wide variety of open source geospatial software without installing anything. There are different options to run OSGeo-live:
 
-* [Install OSGeo-live to your hard disk](https://live.osgeo.org/en/quickstart/osgeolive_install_quickstart.html)
 * [Run OSGeo-live in a Virtual Machine](https://live.osgeo.org/en/quickstart/virtualization_quickstart.html)
 * [Run OSGeo-live from a bootable USB flash drive](https://live.osgeo.org/en/quickstart/usb_quickstart.html)
 
@@ -46,15 +45,16 @@ For a quick-start guide, see: https://live.osgeo.org/en/quickstart/osgeolive_qui
 
 ### GRASS GIS Add-ons
 
-* Time series exercise: [v.strds.stats](https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html)
+* Raster time series exercise: [v.strds.stats](https://grass.osgeo.org/grass72/manuals/addons/v.strds.stats.html)
 * Spatial interpolation exercise: [r.vif](https://grass.osgeo.org/grass72/manuals/addons/r.vif.html) and [r.learn.ml](https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html)
+* Remote sensing analysis exercise: [i.fusion.hpf](https://grass.osgeo.org/grass72/manuals/addons/i.fusion.hpf.html) and [i.landsat8.qc](https://grass.osgeo.org/grass72/manuals/addons/i.landsat8.qc.html)
 
 Install with `g.extension name_of_addon`
 
 ## Data
 
 * [North Carolina location (full dataset, 150Mb)](https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip)
-* [MODIS LST mapset](https://www.dropbox.com/s/xl0jy9v3oe0munl/modis_lst.zip?dl=0)
+* Folder 'data' in this repo contains data for all the exercises.
 
 ## Authors
 
