@@ -1,0 +1,1307 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+
+    <!-- ========================================================  Meta data -->
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Ecodiv:: Spatial interpolation in GRASS GIS</title>
+    <meta name="generator" content="Zim 0.67,the Ecodiv-business template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Spatial interpolation in GRASS GIS,biodiversity,ecology,vegetation,GIS,spatial analysis,map;biogeography,ecogeography">
+
+    <!-- =====================================================  Style sheets -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300&subset=latin,greek,latin-ext' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="../_resources/css/mini_style.css" type="text/css">
+    <link rel="stylesheet" href="../_resources/css/prism.css" type="text/css">
+
+    <!-- ====================================================  Start scripts -->
+    <script type='text/javascript' src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.min.js"></script>
+    <script type='text/javascript' src="../_resources/js/script.js"></script>
+    <script type='text/javascript' src="../_resources/js/prism.js"></script>
+</head>
+<body>
+	<div class="wrapper">
+
+        <!-- =========================================  Start navigation bar -->
+        <div id="taskbar" style="color:#3D6E0F; font-weight:500;">
+            <div id="menuicon">
+                <a href="#" class="toggler">
+                    <img src="../_resources/icons/menu.png" height="32" alt="Menu">
+                </a>
+            </div>
+            <div id="list">
+                <div id="navigation">
+                    <ul>
+                        <li class="index"><a href="https://tutorials.ecodiv.earth/">Tutorials</a></li>
+                        <li class="home"><a href="https://ecodiv.earth">Ecodiv.earth</a></li>
+                        <li class="contact"><a href="https://ecodiv.earth/contact.html">Contact us</a></li>
+                        <li class="search"><a href="https://tutorials.ecodiv.earth/search.html">Site search</a></li>
+                    </ul>
+                    <hr>
+                    <div style="padding: 0px 2px 0px 25px;">
+                    <h2>Table of content</h2>
+                    <ul style="padding: 0px 2px 0px 0px;">
+                        <li style="padding: 0px;"><a href="#H1_0">1 Introduction</a></li>
+                        <ul>
+                            <li style="padding: 0px;"><a href="#H1_1">1.1 Overview</a></li>
+                            <li style="padding: 0px;"><a href="#H1_2">1.2 Doing the exercises</a></li>
+                        </ul>
+                        <li style="padding: 0px;"><a href="#H2_0">2 Spatial interpolation background</a></li>
+                        <li style="padding: 0px;"><a href="#H3_0">3 Interpolation in GRASS GIS</a></li>
+                        <ul>
+                            <li style="padding: 0px;"><a href="#H3_1">3.1 Up- and downscaling</a></li>
+                            <li style="padding: 0px;"><a href="#H3_2">3.2 Point to raster interpolation</a></li>
+                        </ul>
+                        <li style="padding: 0px;"><a href="#H4_0">4 Getting things started</a></li>
+                        <ul>
+                            <li style="padding: 0px;"><a href="#H4_1">4.1 Setting up the database</a></li>
+                            <li style="padding: 0px;"><a href="#H4_2">4.2 Installing addons</a></li>
+                            <li style="padding: 0px;"><a href="#H4_3">4.3 Seeking help</a></li>
+                        </ul>
+                        <li style="padding: 0px;"><a href="#H5_0">5 Geographic interpolation exercises</a></li>
+                        <ul>
+                            <li style="padding: 0px;"><a href="#H5_1">5.1 Rainfall data</a></li>
+                            <li style="padding: 0px;"><a href="#H5_2">5.2 Proximity interpolation</a></li>
+                            <li style="padding: 0px;"><a href="#H5_3">5.3 IDW interpolation</a></li>
+                            <li style="padding: 0px;"><a href="#H5_4">5.4 Trend surface</a></li>
+                            <li style="padding: 0px;"><a href="#H5_5">5.5 Notes</a></li>
+                        </ul>
+                        <li style="padding: 0px;"><a href="#H6_0">6 Environmental interpolation exercises</a></li>
+                        <ul>
+                            <li style="padding: 0px;"><a href="#H6_1">6.1 Example data</a></li>
+                            <li style="padding: 0px;"><a href="#H6_2">6.2 Randomforest modeling</a></li>
+                            <li style="padding: 0px;"><a href="#H6_3">6.3 Notes</a></li>
+                        </ul>
+                    </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- ============================================ End navigation bar -->
+        <div id="block">
+            <div id="content">
+                <br><hr class="hrtop">
+                <h1>Spatial interpolation in GRASS GIS <a name='toc:spatial interpolation'></a></h1>
+                <h2 id="H1_0">1 Introduction</h2>
+
+<p>
+This tutorial was developed as part of the course <a href="http://scientificpubs.com/grass_workshop_itc/index.html" title="Hands-on to GIS and Remote Sensing with GRASS GIS" class="http" target="_blank" target="_blank">Hands-on to GIS and Remote Sensing with GRASS GIS</a> at ITC - University of Twente on November 3rd, 2017. The course, organized by <a href="https://www.itc.nl/" title="ITC" class="https">ITC</a> and <a href="https://osgeo.nl/" title="OSGeo.nl" class="https">OSGeo.nl</a>, offered a very nice <a href="http://scientificpubs.com/grass_workshop_itc/index.html#grassgisintro" title="introduction to GRASS GIS" class="http" target="_blank" target="_blank">introduction to GRASS GIS</a> by Veronica Andreo,  a <a href="http://scientificpubs.com/grass_workshop_itc/index.html#guidedtour" title="guided tour about working with GRASS GIS" class="http" target="_blank" target="_blank">guided tour about working with GRASS GIS</a> by Sajid Pareeth and three modules with hands-on exercises, including this tutorial about spatial interpolation in GRASS GIS. The other two modules are <a href="http://scientificpubs.com/grass_workshop_itc/time_series_exercise.html" title="Raster time series in GRASS GIS: MODIS Land Surface Temperature" class="http" target="_blank" target="_blank">Raster time series in GRASS GIS: MODIS Land Surface Temperature</a> by Veronica Andrea and <a href="http://scientificpubs.com/grass_workshop_itc/RS_exercise.html" title="Remote sensing analysis in GRASS GIS" class="http" target="_blank" target="_blank">Remote sensing analysis in GRASS GIS</a> by Sajid Pareeth.
+</p>
+
+<p>
+<img src="./spatial_interpolation/logos.png">
+</p>
+
+<h3 id="H1_1">1.1 Overview</h3>
+
+<p>
+This module aims to provide a short introduction to some of the functions and tools to carry out spatial interpolation in GRASS GIS, including a number of exercises. Note you are expected to have some background knowledge about spatial analysis in general and the use of spatial interpolation specifically. A (very) brief introduction to spatial interpolation is provided in chapter 2, while chapter 3 provides an overview of spatial interpolation options in GRASS GIS. For more information about spatial interpolation methods, see e.g., the references listed at the end of this tutorial, but also the references in the manual pages of the individual GRASS modules.
+</p>
+
+<p>
+Chapter 4 provides information about the requirements for this tutorial and an explanation of the steps you need to follow to be ready for the exercises. In chapter 5 and 6, you will go through a number of exercises for respectively spatial and environmental interpolation techniques that are available in GRASS GIS. In each of the exercises, you will be shown how to run one or more functions using the command line and/or GUI interface (and where relevant in Python).
+</p>
+
+<h3 id="H1_2">1.2 Doing the exercises</h3>
+
+<p>
+You'll find various exercises in chapter 4 - 6. They are marked with the icon question mark icon. Clicking on the links in the boxes directly below the question will give you worked out example of the exercise in Bash, and in some cases in Python or using the GUI as well.
+</p>
+
+<p>
+It is recommended that you first try to do the exercise yourself. In most cases, some hints are provided, such as the function you should use. If you are not familiar with a function, check out its manual page. Besides an explanation of the parameters, it often contains an example, which is a great way to quickly get an idea how to use the function.
+</p>
+
+<p>
+<div class="alert-box notice"> All images on this page have a fixed width. If you want to view a larger version, just click on an image. To go back, use the back button of your browser. </div>
+</p>
+
+<p>
+If have comments or questions related to this tutorial, you can contact me through the contact form (see side menu). If your questions are more related to GRASS GIS in general, I would strongly suggest to send an email to the <a href="https://grass.osgeo.org/support/mailing-lists/" title="GRASS GIS mailing list" class="https">GRASS GIS mailing list</a>. There is a dedicated and very friendly community of GRASS users and developers that might be able to help you. Just make sure to follow the guidelines on the <a href="https://grass.osgeo.org/wiki/Mailing_list_etiquette" title="mailing list etiquette" class="https">mailing list etiquette</a>. This will maximize the change that somebody can and is willing to help you out.
+</p>
+
+<h2 id="H2_0">2 Spatial interpolation, a background</h2>
+
+<p>
+Spatial interpolation is the procedure of predicting the value of attributes at unsampled sites from measurements made at point locations within the same area or region (Burroughs &amp; McDonnell, 2015). The purpose is often to estimate a continuous surface based on known values in sampled points (Figure 1). For example, given a distribution of point meteorological stations showing precipitation values, how I can I estimate the precipitation values in the rest of the country?
+</p>
+
+<p>
+<a href="./spatial_interpolation/sample points to surface area.png"><img src="./spatial_interpolation/sample points to surface area.png" width="600"></a><br>
+<i>Figure 1. Spatial point interpolation of annual rainfall data in North Carolina.</i>
+</p>
+
+<p>
+Geographic interpolation is based on Tobler's (1970) first law of geography, namely that <i>Everything is related to everything else, but near things are more related than distant things</i>. For example, if you have the altitude of a number of locations, you can use these to build a new elevation surface. Spatial interpolation is generally carried out by estimating a regionalized value at unsampled points based on a weight of observed regionalized values in neighboring locations. The general formula for spatial interpolation is as follows:
+</p>
+
+<p>
+<img src="./spatial_interpolation/equation.svg">
+</p>
+
+<p>
+V<sub>g</sub> is here the interpolated value at point <i>g</i>, Zs<sub>i</sub> is the observed value at point <i>i</i>, <i>N</i> is the total number of observed (neighboring) points and λ<sub>i</sub> is the weight contributing to the interpolation. The challenge lies in calculating the weights, λ, which will be used in the interpolation (Ly et al. 2013).
+</p>
+
+<p>
+Values in point can be estimated based on the neighboring points using deterministic interpolation or geostatistical methods. Deterministic methods are based on surrounding measured values and specific mathematical formulas that determine the shape and smoothness of the resulting surface. Geostatistical methods are based on statistical models that include the statistical relationship between observed points (spatial autocorrelation) and, in some cases, trends in the dataset. GRASS GIS offers both deterministic and geostatistical methods.
+</p>
+
+<p>
+A different approach altogether is to use correlative models to interpolate (predict) the value of a certain variable based on the value of a set of explanatory variables. An example is the use of <a href="https://en.wikipedia.org/wiki/Environmental_niche_modelling" title="environmental niche (or environmental distribution) modeling" class="https">environmental niche (or environmental distribution) modeling</a> to predict the distribution or abundance of species, using environmental variables as predictors (explanatory variables). Another domain in which correlative and machine learning approaches are used is remote sensing. In GRASS GIS, there are a few simple correlative methods, such as linear and multiple linear regression. More advanced methods, including machine learning approaches, are offered in the <a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html" title="r.learn.ml" class="https">r.learn.ml</a> addon.
+</p>
+
+<h2 id="H3_0">3 Interpolation in GRASS GIS - an overview</h2>
+
+<p>
+Interpolation techniques can serve different purposes. When working with rasters of different resolutions, you will come across different resampling and interpolation methods used for down- or upscaling. Than, there is the interpolation of scattered points of lines to create a continuous raster surface, which is the focus of this tutorial. First, let's quickly have a look at what functions are available for the interpolation methods to resample raster layers that are available in GRASS GIS (section 2.2), and for the interpolation of scattered points (section 2.3).
+</p>
+
+<h3 id="H3_1">3.1 Re-interpolation when up- or downscaling</h3>
+
+<p>
+You will often find that not all raster layers come at the same resolution. Or your raster layers may not match the desired resolution of your output layers. In GRASS GIS, transformation of a raster map to a different resolution is performed automatically (on the fly) whenever the region resolution settings are changed. This is done by simple resampling using the nearest neighbor method. This is useful for rasters representing discrete categories.
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_001.png"><img src="./spatial_interpolation/Selection_001.png" width="450"></a><br>
+<i>Figure 2. Resampling functions available in GRASS GIS. Click to view at full size.</i>
+</p>
+
+<p>
+Changing resolution of raster maps that represent continuous fields requires other types of interpolation (Neteler &amp; Mitasova 2008). There are various functions available in GRASS GIS. They can be found in the <i>Raster - Develop raster map</i> menu (Figure 2) and can be divided in two groups:
+</p>
+
+<div style="border-top:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0"><a href="javascript:toggleDiv('upscale');">Resampling of raster maps to finer resolution (click to expand list)</a><div id="upscale" style="display:none">
+
+<p>
+<ul>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.resample.html" title="r.resample" class="https">r.resample</a> uses the default resampling method, which is the nearest neighbor method. r.resample is intended for resampling of discrete raster data (such as land cover, geology or soil type) to a different resolution.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.resamp.interp.html" title="r.resamp.interp" class="https">r.resamp.interp</a> resamples an input raster map by interpolating between 1, 4, 16 or 25 neighboring cells (user selectable). This module, and the next three ones, are intended for reinterpolation of continuous data to a different resolution.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.resamp.rst.html" title="r.resamp.rst" class="https">r.resamp.rst</a> reinterpolates an input raster map using regularized spline with tension and smoothing.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.resamp.bspline.html" title="r.resamp.bspline" class="https">r.resamp.bspline</a> resamples a raster layer using bilinear or bicubic spline interpolation with Tykhonov regularization.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.resamp.filter.html" title="r.resamp.filter" class="https">r.resamp.filter</a> resamples raster layers using an analytic kernel.</li>
+</ul>
+</p>
+
+</div></div><div style="border:1px dashed #2b73d0"><a href="javascript:toggleDiv('downscale');">Resampling of raster maps to coarser resolution (click to expand list)</a><div id="downscale" style="display:none">
+
+<p>
+<ul>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.resamp.stats.html" title="r.resample.stats" class="https">r.resample.stats</a> is used to resample input rasters to a coarser grid using aggregation. By default, value of each cell in the output map is computed by aggregating the values of all raster cells whose centers fall within the bounds of the region cell. Optionally, the function can use the values from all input cells which intersect the output cell, weighted according to the proportion of the source cell which lies inside the output cell. This is slower, but produces a more accurate result.</li>
+</ul>
+</p>
+
+</div></div>
+
+<h3 id="H3_2">3.2 Reinterpolation of "sparse" (scattered points or lines) maps</h3>
+
+<p>
+Spatial interpolation methods can be grouped in deterministic and statistical interpolation methods. In addition, there are the statistical multivariate analyses, which use one or more predictor variables to predict the values of the dependent variables. The methods available in GRASS GIS (as core function or using an addon) are listed below. In addition, one can relatively easily use any of the many interpolation techniques and functions available in R, amongst others. In fact, the v.krige function, for example, using R in the background.
+</p>
+
+<h4>3.2.1 Deterministic Approach to Interpolation</h4>
+
+<p>
+Deterministic interpolation methods use mathematical functions to calculate the values at unknown locations based either on the degree of similarity or the degree of smoothing in relation with neighboring data points. For more information about the methods and documentation, follow the link to read the manual pages.
+</p>
+
+<div style="border:1px dashed #2b73d0"><a href="javascript:toggleDiv('deterministic');">Click to expand / collapse list...</a><div id="deterministic" style="display:none">
+
+<p>
+<ul>
+<li><a href="https://grass.osgeo.org/grass72/manuals/v.voronoi.html" title="v.voronoi:" class="https">v.voronoi:</a> Natural Neighbour method is a method that for each point assigns the value of the nearest measured point. This results in what is called Thiessen or Voronoi polygons.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/addons/r.surf.nnbathy.html" title="r.surf.nnbathy" class="https">r.surf.nnbathy</a> (addon): Interpolating using Natural_neighbor method.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/v.surf.idw.html" title="v.surf.idw" class="https">v.surf.idw</a>, <a href="https://grass.osgeo.org/grass72/manuals/r.surf.idw.html" title="r.surf.idw" class="https">r.surf.idw</a>, and <a href="https://grass.osgeo.org/grass72/manuals/addons/r.surf.idw2.html" title="r.surf.idw2" class="https">r.surf.idw2</a> (addon): Inverse distance weighted average interpolation, which is represented by three different functions:</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/v.surf.bspline.html" title="v.surf.bspline" class="https">v.surf.bspline</a>: Interpolating from vector points with B-splines</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/v.surf.rst.html" title="v.surf.rst" class="https">v.surf.rst</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.vol.rst.html" title="v.vol.rst" class="https">v.vol.rst</a>: Interpolating from vector points with regularized splines with tension , see also <a href="https://grasswiki.osgeo.org/wiki/RST_Spline_Surfaces" title="RST Spline Surfaces." class="https">RST Spline Surfaces.</a></li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.surf.contour.html" title="r.surf.contour" class="https">r.surf.contour</a>: Interpolating from contour lines, see <a href="https://grasswiki.osgeo.org/wiki/Contour_lines_to_DEM" title="Contour lines to DEM." class="https">Contour lines to DEM.</a></li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/addons/v.surf.icw.html" title="v.surf.icw" class="https">v.surf.icw</a>: Interpolating from vector points around barriers or cost surfaces.</li>
+<li>For polynomial trend analysis there is not a specific tool or function, but you can implement it easily using the powerful <a href="https://grass.osgeo.org/grass72/manuals/r.mapcalc.html" title="r.mapcalc" class="https">r.mapcalc</a> tool in combination with <a href="https://grass.osgeo.org/grass72/manuals/r.regression.multi.html" title="r.regression.multi" class="https">r.regression.multi</a>.</li>
+</ul>
+</p>
+
+</div></div>
+
+<h4>3.2.2 Statistical interpolation methods</h4>
+
+<p>
+The second group of spatial interpolation methods use statistical methods involving autocorrelation to predict values at all locations within region of interest and to provide probabilistic estimates of the quality of the interpolation based on the spatial autocorrelation among data points. This group of geostatistical techniques is called Kriging. There are several types of Kriging, two of which are available in GRASS GIS through two different addons (see list below).
+</p>
+
+<div style="border:1px dashed #2b73d0"><a href="javascript:toggleDiv('statistics');">Click to expand / collapse list...</a><div id="statistics" style="display:none">
+
+<p>
+<ul>
+<li><a href="https://grass.osgeo.org/grass72/manuals/addons/v.krige.html" title="v.krige" class="https">v.krige</a> (addon): Interpolating from vector points with ordinary or block kriging.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/addons/v.kriging.html" title="v.kriging" class="https">v.kriging</a> (addon): Interpolation from vector points using ordinary 2D and 3D kriging.</li>
+<li>You can also carry out a</li>
+</ul>
+</p>
+
+</div></div>
+
+<h4>3.2.3 Statistical multivariate interpolation</h4>
+
+<p>
+A different approach altogether is to predict the value of a certain variable based on auxiliary variables using multivariate modeling techniques. Examples of such methods are regression and machine learning techniques. In GRASS GIS a few methods are available.
+</p>
+
+<div style="border:1px dashed #2b73d0"><a href="javascript:toggleDiv('multivariate');">Click to expand / collapse list...</a><div id="multivariate" style="display:none">
+
+<p>
+<ul>
+<li><a href="https://grass.osgeo.org/grass72/manuals/r.regression.multi.html" title="r.regression.multi" class="https">r.regression.multi</a>: Calculates multiple linear regression from raster maps.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/addons/r.gwr.html" title="r.gwr" class="https">r.gwr</a> (addon): Calculates geographically weighted regression from raster maps.</li>
+<li><a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html" title="r.learn.ml" class="https">r.learn.ml</a> (addon): Supervised classification and regression of GRASS rasters using the python scikit-learn package.</li>
+</ul>
+</p>
+
+</div></div>
+
+<h4>3.2.4 Combining trend and spatial autocorrelation</h4>
+
+<p>
+There are also approaches that assume point values are influenced by a trend in the data as well as spatial autocorrelation. An examples is universal kriging. This function is not available in GRASS GIS. An alternative is to first describe the trend using a deterministic trend function (polynomial function). Next, the predicted trend surface is subtracted from the original measured points, and the autocorrelation is modeled from the random errors. Once the model is fit to the random errors and before making a prediction, the polynomial or correlative model is added back to the predictions to give meaningful results (Hengl 2008).
+</p>
+
+<p>
+Trends or spatial patterns will often be related to environmental gradients. Regression and machine learning approaches can be used to model the interaction between environment and the variable of interest. However, these functions ignore possible spatial autocorrelation in a given data set.  Regression kriging provides an alternative approach in which regression (based) models are used to estimate the deterministic part of the variation in a variable, after which the residual can be interpolated with kriging. I.e., they incorporate information on position of the sample data points in environmental and geographic space. For the final estimation, the output of both are summed up (Hengl 2007).
+</p>
+
+<h2 id="H4_0">4 Getting things started</h2>
+
+<h3 id="H4_1">4.1 Setting up the database</h3>
+
+<p>
+In this tutorial, we will be working with the North Carolina data set. You can <a href="https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.zip" title="download" class="https">download</a> this data set from the GRASS GIS website (150 MB). To use this data set, you will first need to find out the path to your <a href="https://grass.osgeo.org/grass73/manuals/grass_database.html" title="GRASS GIS database." class="https">GRASS GIS database.</a> Next, unzip the file you just downloaded and place the folder within your GRASS GIS database. So, if the path to your GRASS GIS database is /<i>home/user/grassgis</i>/ (on Windows, this could be for example <i>c:\data\grassgis</i>), copy the NC folder to that folder.
+</p>
+
+<p>
+<div class="alert-box notice"> If you do not have a GRASS GIS database yet, you can create one with a sample data set included <a href="https://grass.osgeo.org/grass72/manuals/helptext.html#3.-creating-a-grass-database-with-sample-data" title="as explained here" class="https">as explained here</a>.</div>
+</p>
+
+<p>
+In the North Carolina (NC) data set, there are a large number of vector and raster layers. You can find them in the <i>PERMANENT</i>  and <i>landsat</i> mapset (Figure 3). For the exercises, we should keep these base layers as they are, and store the data we create and adapt in another mapset. You should be able to create a new mapset and to define the region settings of this mapset. If you forgot how, check again <a href="http://scientificpubs.com/grass_workshop_itc/index.html#grassgisintro" title="Introduction to GRASS GIS" class="http" target="_blank" target="_blank">Introduction to GRASS GIS</a> and  <a href="http://scientificpubs.com/grass_workshop_itc/index.html#guidedtour" title="guided tour about working with GRASS GIS." class="http" target="_blank" target="_blank">guided tour about working with GRASS GIS.</a>
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_005.png"><img src="./spatial_interpolation/Selection_005.png" width="450"></a><br>
+<i>Figure 3. The mapsets available by default in the NC dataset, complemented by the bioclim dataset (which we will create later).</i>
+</p>
+
+<p>
+<div class="question-box question"> Exercise: Create a new mapset, make sure you are in that mapset, and set the region (extent and resolution) to match that of the <i>raster layer elev_county_500m</i> in the PERMANENT mapset. You will need the functions <i>g.mapset</i> and <i>g.region</i>. </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex1a');">BASH</a><div id="ex1a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Open manual page
+g.mapset --help
+
+# Create new mapset and switch to it (this is done automatically during
+# creation of the mapset
+g.mapset -c mapset=exercise</code></pre>
+</div>
+
+<p>
+We can now make sure we are in the right mapset and whether we have access to the other mapsets. You need the latter as we will be working with layers stored in the PERMANENT and bioclim mapsets. We can use the <i>g.mapset</i> function to check the current mapset and whether we have access to the other mapsets using the <i>p</i> and <i>l</i> flag respectively.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Check current mapset and available mapsets
+g.mapset -l -p</code></pre>
+</div>
+
+<p>
+The function should print the name of the current mapset. As you will see, no other names are printed on the console, which means you do not have access to the other mapsets. We can enable access using the <i>g.mapsets</i> function (watch the mapset<u>s</u>). Also with this function, you can list all mapsets in the Location, and those to which you have access.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Print all mapsets and those available
+g.mapsets -l
+
+# Enable access the mapsets (put them on the PATH)
+g.mapsets mapset=bioclim,landsat,PERMANENT operation=add</code></pre>
+</div>
+
+<p>
+Now that we have access to the layers in the other mapsets, we can set the region, using the extent and resolution of the raster layer <i>elev_state_500m@PERMANENT</i>.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Set region to NC (g.region -d)
+g.region -p raster=elev_state_500m@PERMANENT</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex1b');">GUI</a><div id="ex1b" style="display:none">
+
+<p>
+<ol type="1" start="1">
+<li>Create a new mapset: Figure 4.</li>
+<li>Open mapset access manager: Figure 5a - 5b</li>
+<li>Alternative mapset access window: Figure 6</li>
+<li>Set region: Figure 7</li>
+</ol>
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_007.png"><img src="./spatial_interpolation/Selection_007.png" width="450"></a><br>
+<i>Figure 4. Create mapset using the menu.</i>
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_008.png"><img src="./spatial_interpolation/Selection_008.png" width="450"></a><br>
+<i>Figure 5a. Open g.mapsets to manage access to mapsets</i>
+</p>
+
+<p>
+<a href="./spatial_interpolation/Manage access to mapsets_009.png"><img src="./spatial_interpolation/Manage access to mapsets_009.png" width="350"></a><br>
+<i>Figure 5b. Set access to one or more mapsets in your Location</i>
+</p>
+
+<p>
+Note that when you open g.mapsets from the command line, you get a different window from above (Figure 9). The window in figure 8b is basically a convenient wrapper to the g.mapsets function, while the g.mapsets window in Figure 9 is offers access to the full set of options.
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_010.png"><img src="./spatial_interpolation/Selection_010.png" width="450"></a><br>
+<i>Figure 6. Open the g.mapsets window from the command line</i>
+</p>
+
+<p>
+Now we have access to the layers in the other mapsets, we can set the region, using the extent and resolution of the raster layer <i>elev_state_500m@PERMANENT</i>.
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_013.png"><img src="./spatial_interpolation/Selection_013.png" width="450"></a><br>
+<i>Figure 7. Set the region, based on the raster layer elev_state_500m@PERMANENT.</i>
+</p>
+
+</div></div>
+
+<h3 id="H4_2">4.2 Installing required addons</h3>
+
+<p>
+For the exercises in this tutorial, you will be asked to install a few addons. They are all available from the official GRASS GIS Add-on repository. They can be easily installed in the local installation through the graphical user interface (<i>Menu - Settings - Addons Extension - Install</i>) or via the <i>g.extension</i> command. Go to the <a href="https://grass.osgeo.org/grass72/manuals/g.extension.html" title="manual page of g.extension" class="https">manual page of g.extension</a> for a more details overview.
+</p>
+
+<p>
+<div class="question-box question"> Exercise: . Install the addon <i>v.vif</i> </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex2a');">BASH</a><div id="ex2a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># install extension from GRASS GIS Add-on repository
+g.extension extension=r.vif</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex2b');">GUI</a><div id="ex2b" style="display:none">
+
+<p>
+You can find the g.extension function in the <i>Settings</i> menu as shown in figure 8.
+</p>
+
+<p>
+<a href="./spatial_interpolation/screenshot_01.png"><img src="./spatial_interpolation/screenshot_01.png" width="450"></a><br>
+Figure 8. <i>Click to view at full size</i>
+</p>
+
+<p>
+In the g.extension window (Figure 9), you can set the repository. Leave it empty if you want to use the official repository. You can scroll through the list of extension, or use the search function to find the extension you need. See the <a href="file:///usr/local/grass7/grass-7.3.svn/docs/html/g.extension.html" title="help file" class="file">help file</a> for more details.
+</p>
+
+<p>
+<a href="./spatial_interpolation/screenshot_02.png"><img src="./spatial_interpolation/screenshot_02.png" width="450"></a><br>
+<i>Figure 9. Click to view at full size</i>
+</p>
+
+</div></div>
+
+<h3 id="H4_3">4.3 Seeking help</h3>
+
+<p>
+As mentioned in the <a href="http://scientificpubs.com/grass_workshop_itc/index.html#help!!" title="Introduction module" class="http" target="_blank" target="_blank">Introduction module</a>, there are multiple sources from where to get help about GRASS GIS. When in doubt about a function, you should always start with the function's manual page. You can get a basic descriptions of the options and flags of a function using the <i>--help</i> or <i>--h</i> flag after the module name. Or open the manual page from the function's window or online.
+</p>
+
+<p>
+<div class="question-box question"> Exercise: find out more information about the <i>r.vif</i> function</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex3a');">BASH</a><div id="ex3a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers">GRASS 7.3.svn (nc_spm_08_grass7):~ > r.vif --help
+To calculate the stepwise variance inflation factor.
+
+Usage:
+ r.vif [-sf] maps=string[,string,...] [retain=string[,string,...]]
+   [n=number] [maxvif=number] [file=name] [--overwrite] [--help]
+   [--verbose] [--quiet] [--ui]
+
+Flags:
+  -s   Only print selected variables to screen
+  -f   low-memory option (will use full raster layers)
+
+Parameters:
+    maps   variables
+  retain   variables
+       n   number of sample points (number or percentage)
+           default: 100%
+  maxvif   Maximum vif
+    file   Name of output text file
+[Raster MASK present]</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex3b');">GUI</a><div id="ex3b" style="display:none">
+
+<p>
+<a href="./spatial_interpolation/r.vif manual page.png"><img src="./spatial_interpolation/r.vif manual page.png" width="450"></a><br>
+<i>Figure 10. Help page of the r.vif function in the functions Window (under the Manual tab)</i>
+</p>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 18px"><a href="javascript:toggleDiv('ex3c');">Online</a><div id="ex3c" style="display:none">
+
+<p>
+<a href="./spatial_interpolation/online_helpfile.png"><img src="./spatial_interpolation/online_helpfile.png" width="450"></a><br>
+<i>Figure 11. Online manual page of the r.vif function </i>
+</p>
+
+</div></div>
+
+<p>
+When you are new to GRASS or want to try out a new function, one tip is to use the GUI first and explore the different settings. If you then want to use this function on the command line (perhaps as part of a larger work-flow), you can easily copy the corresponding code to the clipboard (Figure 12). You can open the function GUI via the menu, or you can simply type the function name on the command line and press enter.
+</p>
+
+<p>
+<a href="./spatial_interpolation/r.vifGUI01.png"><img src="./spatial_interpolation/r.vifGUI01.png" width="450"></a><br>
+<i>Figure 12. Get the command line code based GUI parameters. Use the Copy button to copy the command line to the clipboard.</i>
+</p>
+
+<h2 id="H5_0">5. Hands-on geographic point interpolation</h2>
+
+<p>
+In this section, we will look at a few of the interpolation functions in GRASS GIS. This should provide you with some ideas what is possible and make it easier to understand how to employ the full power of GRASS GIS. If you would like to try out a function that is not included in the exercises below, ask and we'll try to help you out.
+</p>
+
+<h3 id="H5_1">5.1 Rainfall data</h3>
+
+<p>
+In the North Carolina (NC) data set, there is a vector point data layer with in the attribute table the average monthly and annual rainfall data for the period 1970 - 2000; the <i>precip_30ynormals@PERMANENT</i> vector layer. Note that the name after the <b>at</b> (@) sign is the name of the mapset in which the layer is stored. Let's first have a look at the data layer. Let's first have a look at the data.
+</p>
+
+<p>
+<div class="question-box question">  Exercise: Check out what variables there are in the attribute table and the attribute table itself.</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex4a');">BASH</a><div id="ex4a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Print layer metadata
+v.info map=precip_30ynormals@PERMANENT
+
+# Print column names and data type
+v.info -c map=precip_30ynormals@PERMANENT</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 18px;"><a href="javascript:toggleDiv('ex4b');">GUI</a><div id="ex4b" style="display:none">
+
+<p>
+<a href="./spatial_interpolation/Selection_002.png"><img src="./spatial_interpolation/Selection_002.png" width="450"></a><br>
+<i>Figure 11. Open vector layer precip_30ynormals@PERMANENT</i>
+</p>
+
+<p>
+<a href="./spatial_interpolation/Selection_004.png"><img src="./spatial_interpolation/Selection_004.png" width="450"></a><br>
+<i>Figure 12. Check the attribute table (1) or the table and geometric attributes of a single point</i>
+</p>
+
+</div></div>
+
+<p>
+Now, to display the map and add decorations, we can run the commands from the command line or use the main GUI and copy the corresponding commands for future replication of the workflow. Note the "Copy" button in the GUI of each module.
+</p>
+
+<p>
+<div class="question-box question">  Create a map of the weather stations (<i>precip_30ynormals@PERMANENT</i>) and the state boundaries. You'll need at least the <a href="https://grass.osgeo.org/grass72/manuals/d.mon.html" title="d.mon" class="https">d.mon</a>, <a href="https://grass.osgeo.org/grass72/manuals/d.vect.html" title="d.vect" class="https">d.vect</a>, and <a href="https://grass.osgeo.org/grass72/manuals/d.legend.vect.html" title="d.legend.vect" class="https">d.legend.vect</a> commands. You should get something like
+</p>
+
+<p>
+<a href="./spatial_interpolation/map_01.png"><img src="./spatial_interpolation/map_01.png" width="450"></a><br>
+<i>Figure 13. Weather stations in NC</i>
+</p>
+
+<p>
+</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex6a');">BASH</a><div id="ex6a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Open a monitor
+d.mon wx0
+
+# Display the stations and the county boundaries
+d.vect map=boundary_county type=boundary color=26:26:26 \
+    fill_color=229:229:229 width=2 legend_label="state boundaries"
+d.vect map=precip_30ynormals@PERMANENT color=77:77:77 \
+    fill_color=0:187:0 width=1 icon=basic/cross3 size=10
+
+# Display a vector map
+d.vect map=boundary_county type=boundary
+
+# Display legend
+d.legend.vect -b at=2,40 title="Weather stations in NC" \
+    symbol_size=15 fontsize=14 title_fontsize=20
+
+# Close monitor
+d.mon stop=wx0</code></pre>
+</div>
+
+</div></div>
+</p>
+
+<h3 id="H5_2">5.2 Proximity interpolation - Voronoi polygons</h3>
+
+<p>
+This is probably the simplest interpolation method. It was introduced by Alfred H. Thiessen more than a century ago. The goal is simple: Assign to all unsampled locations the value of the closest sampled location. This generates voronoi polygons whereby lines that split the midpoint between each sampled location are connected. They thereby form a polygon that encloses the sample point whose value it inherits (Gimond 2017). The method can be used for vector to raster conversion for special cases, e.g., when resulting raster layers need to be discrete and only have those discrete values assigned to the points (Neteler &amp; Mitasova 2008).
+</p>
+
+<p>
+<div class="question-box question">  Interpolate annual rainfall data for the whole state using the <a href="https://grass.osgeo.org/grass72/manuals/v.voronoi.html" title="v.voronoi" class="https">v.voronoi</a> function and the rainfall data in precip_30ynormals@PERMANENT. You should get something like figure 14. Hint: after creating the voronoi polygon layer, you'll need to do some post-processing, like clipping the resulting layer to fit within the state boundary.
+</p>
+
+<p>
+<a href="./spatial_interpolation/voroi_polygon_map.png"><img src="./spatial_interpolation/voroi_polygon_map.png" width="450"></a><br>
+<i>Figure 14. Annual rainfall based on proximity interpolation of average rainfall data for the period 1970 - 2000, clipped to the state boundaries. The voronoi polygons are emphasized using a white boundary. White circles give te location of the weather stations.</i>
+</p>
+
+<p>
+</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex7a');">BASH</a><div id="ex7a" style="display:none">
+
+<p>
+First step is to identify the column with the z value (the value you want to interpolate). We have seen before that this is the column <i>annual</i>. Next you can run <i>v.voronoi</i>.
+</p>
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Compute voronoi diagram layer
+v.voronoi input=precip_30ynormals@PERMANENT output=precip_voroi
+
+# Set colortable
+v.colors map=precip_voroi use=attr column=annual color=precipitation</code></pre>
+</div>
+
+<p>
+If you open the map in your map window, you'll see something like Figure 15 (with overlay of the state boundary). It doesn't look particularly nice, but it does show very well the importance of edge effect when interpolating data.
+</p>
+
+<p>
+<a href="./spatial_interpolation/voro./voronoi_1ststep.pngnoi_1ststep.png"><img src="./spatial_interpolation/voronoi_1ststep.png" width="450"></a><br>
+<i>Figure 15. Annual rainfall based on proximity interpolation of average rainfall data for the period 1970 - 2000</i>
+</p>
+
+<p>
+To make a better looking map, we can clip the map to fit the state boundaries. We can use the <a href="https://grass.osgeo.org/grass72/manuals/v.overlay.html" title="v.overlay" class="https">v.overlay</a> function for that. Alternatively, we can use the <a href="https://grass.osgeo.org/grass72/manuals/addons/v.clip.html" title="v.clip" class="https">v.clip</a> function. It is an addon so you first will need to install it (it will become a core function in the next GRASS version). The v.overlay function is more versatile, whereas v.clip is simpler to use. The latter has another important advantage. Let's run them both for you to see what that advantage is.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Clip the voronoi rainfal map with the vector layer with state boundary
+v.overlay ainput=precip_voroi binput=nc_state@PERMANENT \
+    operator=and output=precip_voroi2
+
+# Install the v.clip addon
+g.extension extension=v.clip
+v.clip -d input=precip_voroi clip=nc_state@PERMANENT output=precip_voroi3</code></pre>
+</div>
+
+<p>
+If you plot both maps, you'll see they look the same, as it should. But have a look at the attribute table. Or print out the column names as is done below. What do you see?
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Print the column names
+v.info -c map=precip_voroi2
+v.info -c map=precip_voroi3</code></pre>
+</div>
+
+<p>
+With the v.overlay function, the attribute tables of both layers are combined. To avoid duplicate column names, all column names get a prefix (a_ for the first table, b_ for the second table. With the v.clip function, only the attribute table of the vector layer to be clipped is included in the output layer.  The precip_voroi layer is obviously preferable, so let's remove the precip_voroi2 layer. We can do this with the <a href="https://grass.osgeo.org/grass72/manuals/g.remove.html" title="g.remove" class="https">g.remove</a> function.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Print the column names
+g.remove -f type=vector name=precip_voroi2</code></pre>
+</div>
+
+<p>
+If we set the color table and overlay with the weather stations layer, we get something like Figure 14. See if you understand the code below. If not, don't hesitate to ask. The different cartographic tools and different ways one can assign colors to a vector layer can be confusing.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Create a new column 'RGB' and assign colors based on the rainfall values.
+# Difference with earlier step is that we use the RGB column instead of
+# creating a color table. The reason is that with the RGB column, it is easier
+# to plot the map. Another think you may want to know is that it is possible to
+# assign colors interactively; see the 'manage colors' tab in the vector menu.
+v.colors map=precip_voroi3 use=attr column=annual color=rainbow \
+    rgb_column=RGB
+
+# Remove the color table from the original voroi diagram map
+# We can then use it to mark the boundaries
+v.colors -r map=precip_voroi
+
+# Create map (note that instead of printing the map to the screen, you can also
+# print the map directly to a file. Check out the d.mon helpfile.
+d.mon start=wx0 width=800 height=315 bgcolor=none
+d.vect map=precip_voroi3 rgb_column=RGB icon_area=legend/area_curved
+d.vect map=precip_voroi type=boundary color=white fill_color=none width=1
+d.vect map=precip_30ynormals@PERMANENT color=white fill_color=none \
+    icon=basic/circle width=0.5
+
+# And if you are ready, close the window
+d.mon stop=wx0</code></pre>
+</div>
+
+<p>
+I think we can agree that the resulting map (Figure 14) looks better than Figure 15. We could of course add legend and other decorations, but I leave that for the next step (because it is easier to create a nice legend based on a raster layer, which is what we create next).
+</p>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 10px;"><a href="javascript:toggleDiv('ex7b');">Python</a><div id="ex7b" style="display:none">
+
+<p>
+Below you'll find an example of how you can carry out this exercise using Python code. For a more detailed explanation of the different steps, see the Bash section above.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-python line-numbers"># Import the needed libraries
+import grass.pygrass.modules as gmod
+
+# Compute voronoi diagram layer
+gmod.Module("v.voronoi", input="precip_30ynormals@PERMANENT",
+            output="tmp02")
+
+# Clip the voronoi rainfal map with the vector layer with state boundary
+gmod.Module("g.extension", extension="v.clip")
+gmod.Module("v.clip", flags="d", input="tmp02", clip="nc_state@PERMANENT",
+            output="precip_voroi_p")
+
+# Set colortable
+gmod.Module("v.colors", map="precip_voroi_p", use="attr", column="annual",
+            color="rainbow", rgb_column="RGB")
+
+# Create a map
+gmod.Module("d.mon", start="wx0", width=800, height=315, bgcolor="none")
+gmod.Module("d.vect", map="precip_voroi_p", rgb_column="RGB",
+            icon_area="legend/area_curved")
+gmod.Module("d.vect", map="precip_voroi_p", type="boundary", color="white",
+            fill_color="none", width=0.8)
+gmod.Module("d.vect", map="precip_30ynormals@PERMANENT", color="white",
+            fill_color="none", icon="basic/circle", width=0.5)</code></pre>
+</div>
+
+<p>
+<div class="alert-box notice"> If you compare the Python code above with the corresponding Bash code (see above), you'll see that what you basically do is to wrap the function into a Python function. Not sure that is the proper terminology, but I hope you'll get what I am saying.</div>
+</p>
+
+</div></div>
+</p>
+
+<p>
+Most other interpolation techniques in GRASS GIS have as output raster instead of vector layers. To be able to compare layers, we need to convert the Voronoi vector layer to a raster layer first. Let's do that first. And, since we did not create any other interpolated layer yet, let's compare the resulting raster layer with the  <a href="http://www.worldclim.org/" title="Worldclim" class="http" target="_blank" target="_blank">Worldclim</a> annual rainfall data. To download and importing the data, follow the steps in the tutorial <a href="./import-bioclim-data.html" title="import Bioclim data" class="page">import Bioclim data</a>. Alternatively, <a href="./spatial_interpolation/bioclim.zip" title="download ready-to-use mapset" class="file">download ready-to-use mapset</a> and unzip it within the <i>nc_spm_08_grass7</i> location (look for the folder of that name in your grass database). The layer we are looking for is the bio12 layer (mean annual rainfall).
+</p>
+
+<p>
+<div class="question-box question">  Convert the Voronoi vector layer to a raster layer (use the function <a href="https://grass.osgeo.org/grass72/manuals/v.to.rast.html" title="v.to.rast)" class="https">v.to.rast)</a> and compare the two layer visually and based on basic statistics (<a href="https://grass.osgeo.org/grass72/manuals/r.univar.html" title="r.univar" class="https">r.univar</a>). Figure 16 provides an example how we could compare the two maps, viz., by plotting them in one figure together with the legend and a histogram. For a more interactive comparison, see examples under the GUI tab.
+</p>
+
+<p>
+<a href="./spatial_interpolation/voroi_vs_worldclim_01.png"><img src="./spatial_interpolation/voroi_vs_worldclim_01.png" width="450"></a><br>
+<i>Figure 16. Comparing the annual rainfall distribution based on the NC weatherstation interpolated values and the bio12 map from Worldclim</i>
+</p>
+
+<p>
+</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex8a');">BASH</a><div id="ex8a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Convert vector to raster layer. By setting the rgb_column to RGB, the
+# raster layer will get the same color table as the vector layer
+v.to.rast input=precip_voroi3 output=precip_voroi use=attr \
+    attribute_column=annual rgb_column=RGB</code></pre>
+</div>
+
+<p>
+There are various ways we can compare the raster layer we just created with the <i>bio12</i> layer. Let's first compare their range.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># First we set a MASK to mask out the areas outside the NC boundaries
+r.mask vector=nc_state@PERMANENT
+
+# Compare summary statistics of the bio12 and precip_voroi layers
+r.univar map=bio12@bioclim
+r.univar map=precip_voroi</code></pre>
+</div>
+
+<p>
+As you can see, mean and total rainfall estimates are pretty close, but our interpolated map provides a clearly higher maximum annual rainfall estimate. So what about the spatial rainfall distribution pattern? Let's do a simple visual comparison. To do so, the maps need to use the same colour table. Given the differences in range, we cannot simply assign the colour table of one map to the other. We can, however, assign a color table to both layers at the same time. The r.colors function will take the combined range to determine the colour distribution.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Set colour table of precip_voroi to match that of bio12
+r.colors map=precip_voroi,bio12@bioclim color=viridis</code></pre>
+</div>
+
+<p>
+You can combine <a href="https://grass.osgeo.org/grass72/manuals/d.mon.html" title="d.mon" class="https">d.mon</a> and <a href="https://grass.osgeo.org/grass72/manuals/d.frame.html" title="d.frame" class="https">d.frame</a> to plot two or more layers below or next to each other, like Figure 16 above.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Now we can print them in one figure.
+d.mon start=wx0 width=800 height=660 bgcolor=none
+
+# Remove all frames and erase the current graphics monitor
+d.frame -e
+
+# Create a first frame and plot our map
+d.frame -c frame=first at=50,100,0,100
+d.rast precip_voroi
+d.legend -d raster=precip_voroi title="Precipitation (Voronoi)" \
+    label_step=500 at=65,67,10,50 font=arial fontsize=12
+
+# Create a second frame and plot the bio12 map
+d.frame -c frame=second at=1,49,0,100
+d.rast bio12@bioclim
+d.legend -d raster=bio12@bioclim title="Precipitation (Worldclim)" \
+    label_step=250 at=15,17,10,50 font=arial fontsize=12
+
+# And if you are ready, close the window
+d.mon stop=wx0</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex8b');">Python</a><div id="ex8b" style="display:none">
+
+<p>
+Below you'll find an example of how you can carry out this exercise using Python code. For a more detailed explanation of the different steps, see the Bash section above.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-python line-numbers"># Import the needed libraries
+import grass.pygrass.modules as gmod
+
+# Convert vector to raster layer. By setting the rgb_column to RGB, the
+# raster layer will get the same color table as the vector layer
+gmod.Module("v.to.rast", input="precip_voroi_p", output="precip_voroi_p",
+            use="attr", attribute_column="annual", rgb_column="RGB")
+
+# First we set a MASK to mask out the areas outside the NC boundaries
+gmod.Module("r.mask", overwrite=True, vector="nc_state@PERMANENT")
+
+# Set colour table of precip_voroi to match that of bio12
+gmod.Module("r.colors", map="precip_voroi_p,bio12@bioclim", color="viridis")
+
+# Now we can print them in one figure.
+gmod.Module("d.mon", start="wx0", width=800, height=660, bgcolor="none")
+
+# Remove all frames and erase the current graphics monitor
+gmod.Module("d.frame", flags="e")
+
+# Create a first frame and plot our map
+gmod.Module("d.frame", flags="c", frame="first", at=[50,100,0,100])
+gmod.Module("d.rast", map="precip_voroi_p")
+gmod.Module("d.legend", flags="d", raster="precip_voroi_p",
+            title="Precipitation (Voronoi)", label_step=250, at=[65,67,10,50],
+            font="arial", fontsize=12)
+
+# Create a second frame and plot the bio12 map
+gmod.Module("d.frame", flags="c", frame="second", at=[1,49,0,100])
+gmod.Module("d.rast", map="bio12@bioclim")
+gmod.Module("d.legend", flags="d", raster="bio12@bioclim",
+            title="Precipitation (Voronoi)", label_step=250, at=[15,17,10,50],
+            font="arial", fontsize=12)
+
+# And if you are ready, close the window
+gmod.Module("d.mon", stop="wx0")</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 10px;"><a href="javascript:toggleDiv('ex8c');">GUI</a><div id="ex8c" style="display:none">
+
+<p>
+To convert the vector to raster layer using the v.to.rast function, which you can find under the <i>map type conversion</i> menu under the <i>vector menu</i>. The r.colors function can be found under the <i>manage colors</i> submenu of the <i>raster</i> menu.
+</p>
+
+<p>
+<a href="./spatial_interpolation/v.to.rast_01.png"><img src="./spatial_interpolation/v.to.rast_01.png" width="450"></a><br>
+<i>Figure 17a. The v.to.rast window. See this and figure 17b for the parameter settings.</i>
+</p>
+
+<p>
+<a href="./spatial_interpolation/v.to.rast_02.png"><img src="./spatial_interpolation/v.to.rast_02.png" width="450"></a><br>
+<i>Figure 17b. The v.to.rast window. See this and figure 16a for the parameter settings.</i>
+</p>
+
+<p>
+<a href="./spatial_interpolation/r_colors_gui.png"><img src="./spatial_interpolation/r_colors_gui.png" width="450"></a><br>
+<i>Figure 18. Set the color table for the Worldclim bio12 and the voronoi interpolated rainfall layer.</i>
+</p>
+
+<p>
+Now we can explore the two layers and their differences. We can for example compare the rainfall frequency distribution of the two layers using the histogram tool (Figure 18) or explore the relationship using a scatterplot (Figure 19). You can save the plot as an image. If you don't like the default look, you can even save it as svg and make further adjustments to fit your needs in e.g., Inkscape (scroll e.g., to the end of <a href="./plot-temporal-data.html" title="this post" class="page">this post</a> for an example).
+</p>
+
+<p>
+<a href="./spatial_interpolation/histograms3.png"><img src="./spatial_interpolation/histograms3.png" width="450"></a><br>
+<i>Figure 19. Histogram tool to examine the frequency distribution of one or more raster layers. You can pan en zoom (purple), get summary statistics (blue), print or save the plot as image or pdf (green) and change the graph items (orange). </i>
+</p>
+
+<p>
+<a href="./spatial_interpolation/scatterplot tool.png"><img src="./spatial_interpolation/scatterplot tool.png" width="450"></a><br>
+<i>Figure 20. Scatterplot and statistics to compare two layers. </i>
+</p>
+
+<p>
+A very nice took to interactively compare two layers is the <a href="https://grasswiki.osgeo.org/wiki/WxGUI_Map_Swipe" title="Map Swipe tool." class="https">Map Swipe tool.</a> You can find it under the File menu → Map Swipe or by typing in <i>g.gui.mapswipe</i> on the command line. It has a 'swipe' mode (default) and 'mirror' mode (synchronized maps displayed side by side). And like in the normal map window, you can zoom in, pan and query raster values.
+</p>
+
+<p>
+<a href="./spatial_interpolation/Screenshot from 2017-11-02 23-01-20.png"><img src="./spatial_interpolation/Screenshot from 2017-11-02 23-01-20.png" width="450"></a><br>
+<i>Figure 21. Map swipe tool to compare two layers side by side</i>
+</p>
+
+</div></div>
+
+<p>
+Before we go to the next interpolation technique, there is actually another way to do a proximity interpolation with <a href="https://grass.osgeo.org/grass72/manuals/r.grow.distance.html" title="r.grow.distance" class="https">r.grow.distance</a>
+</p>
+
+<p>
+<div class="question-box question"> Try to find out how to create voronoi polygons using the above mentioned tool and see if the outcome is the same as from v.voronoi. </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 18px;"><a href="javascript:toggleDiv('ex9a');">BASH</a><div id="ex9a" style="display:none">
+
+<p>
+The r.grow.distance function computes for each raster cell the distance to and ID of the nearest feature (raster cell with an value) in an input raster layer. This is in principle the same as we did with the v.voronoi function.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Create a raster layer with voronoi polygons
+v.to.rast input=precip_30ynormals@PERMANENT output=weatherstations use=attr attribute_column=annual
+r.grow.distance input=weatherstations value=weatherstations_voroi
+
+# Compare with the previous interpolated layer
+r.mapcalc expression="voronoi_compare = weatherstations_voroi - precip_voroi"
+r.colors map=voronoi_compare color=differences</code></pre>
+</div>
+
+<p>
+If you check out the resulting map, you'll find some small differences (Figure 22). Apart from that one larger areas on the coast, you really need to zoom in to find the other areas where the two maps differ. Any idea why the maps are not exactly the same?
+</p>
+
+<p>
+<a href="./spatial_interpolation/voronoi_differences.png"><img src="./spatial_interpolation/voronoi_differences.png" width="450"></a><br>
+<i>Figure 22. Difference map between the Voronoi maps created using v.voronoi and r.grow.distance.</i>
+</p>
+
+</div></div>
+</p>
+
+<p>
+Thiessen’s method was very practical in his days when computers did not exist. But today, computers afford us more advanced methods of interpolation as we will see next.
+</p>
+
+<h3 id="H5_3">5.3 Interpolation using Inverse Distance Weighted (IDW)</h3>
+
+<p>
+The inverse distance weighted (IDW) technique computes an average value for unsampled locations using values from nearby weighted locations. The weights are proportional to the proximity of the sampled points to the unsampled location and can be specified by the IDW power coefficient. The larger the power coefficient, the stronger the weight of nearby points (Gimond 2017).
+</p>
+
+<p>
+In GRASS GIS, there are three functions to compute the IDW, namely <a href="https://grass.osgeo.org/grass72/manuals/v.surf.idw.html" title="v.surf.idw" class="https">v.surf.idw</a>, <a href="https://grass.osgeo.org/grass72/manuals/r.surf.idw.html" title="r.surf.idw" class="https">r.surf.idw</a>, and <a href="https://grass.osgeo.org/grass72/manuals/addons/r.surf.idw2.html" title="r.surf.idw2" class="https">r.surf.idw2</a> (addon). They all have their own specific advantages, so you should read the manual pages carefully before making a choice. In the exercise below, we will look at r.surf.idw, as this functions can also generate a error-map using cross-validation.
+</p>
+
+<p>
+<div class="question-box question"> Create interpolated rainfall map using r.surf.idw and compare the result with the Voronoi polygon representation and the map from Worldclim </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex10a');">BASH</a><div id="ex10a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># r.surf.idw only works for integer maps. We therefore multiply the values
+# with 10, to retain a reasonable level of precision, and then convert values
+# to integers.
+r.mapcalc expression="rainfall_int = int(rainfallstations*10)"
+
+# Compute the surface
+r.surf.idw input=rainfall_int output=test01
+r.mapcalc expression="precip_idw = test01/10.0"
+g.remove -f type=raster name=test01
+
+# Give all precipitation maps the same color table
+r.colors map=precip_voroi,bio12@bioclim,precip_idw color=viridis
+</code></pre>
+</div>
+
+<p>
+Let's plot them in one figure for comparison.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Start monitor
+d.mon start=wx0 width=800 height=990 bgcolor=none
+
+# Remove all frames and erase the current graphics monitor
+d.frame -e
+
+# Create a first frame
+d.frame -c frame=first at=67,100,0,100
+d.rast bio12@bioclim
+d.legend -d raster=bio12@bioclim title="Precipitation (Worldclim)" \
+    label_step=250 at=75,77,10,50 font=arial fontsize=12
+
+# Create a second frame
+d.frame -c frame=second at=34,66,0,100
+d.rast precip_voroi
+d.legend -d raster=precip_voroi title="Precipitation (Voronoi)" \
+    label_step=500 at=41,43,10,50 font=arial fontsize=12
+
+# Create a third frame
+d.frame -c frame=third at=0,32,0,100
+d.rast precip_idw
+d.legend -d raster=precip_voroi title="Precipitation (IDW)" \
+    label_step=500 at=8,10,10,50 font=arial fontsize=12
+
+
+# And if you are ready, close the window
+d.mon stop=wx0</code></pre>
+</div>
+
+</div></div>
+</p>
+
+<p>
+Your map should like look like the third one in figure 22. As you can see, the overall patterns are similar. The differences are clear as well. The IDW surface is much smoother than that of the Voronoi polygon surface. Both miss the fine-scale patterns in the southwestern highlands which we can see on the Worldclim data layer, and which are related to the topographic patterns in that part of the state.
+</p>
+
+<p>
+<a href="file:///home/paulo/wc_voronoi_idw.png"><img src="file:///home/paulo/wc_voronoi_idw.png" width="450"></a><br>
+<i>Figure 23. Estimated annual rainfall surface based  on, from top down, Worldclim, and Voronoi polygon and IDW approaches.</i>
+</p>
+
+<p>
+<tt><!--</tt><br>
+When creating interpolation surfaces, it is important to have a notion of how accurate  and reliable your interpolation results are. The <a href="https://grass.osgeo.org/grass72/manuals/v.surf.idw.html" title="r.surf.idw" class="https">r.surf.idw</a> provides the option to compute an error function based on leave-one-out cross-validation.
+</p>
+
+<p>
+<div class="question-box question"> Create an error map for the IDW interpolated layer, and provide summary statistics </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex11a');">BASH</a><div id="ex11a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Compute the the error map
+r.surf.idw -e input=rainfall_int output=cv_errormap
+r.colors map=cv_errormap color=differences
+r.univar map=cv_errormap</code></pre>
+</div>
+
+<p>
+<div class="alert-box error"> I am currently getting an error when running the r.surf.idw with e flag. I'll report back when I have the solution.</div>
+</p>
+
+</div></div>
+</p>
+
+<p>
+<tt>--></tt>
+</p>
+
+<p>
+Up to this point, we have used  the default parameter settings (number of neighboring points and the exponent. Next step, which I will leave to you, is to design an experiment that  elucidates the impact of IDW parameters on the surface. For example, run the IDW interpolation using different combinations of the exponent (e.g., power=0.5, 1, 2.5, 5) and the number of neighboring points (e.g., npoint=1, 5, 20, 60). Each time, also run the cross validation to assess the relative predictive performance. You can also visualize the different maps to see where the differences are.
+</p>
+
+<h3 id="H5_4">5.4 Trend surface</h3>
+
+<p>
+A trend surface model is regression models with two independent variables,  the X and Y coordinates, and a dependent variable, which is the thematic variable to be modeled (rainfall for example). The model can be linear regression function (first order), or if you want to model a more complex spatial patters, a polynomial function (2<sup>nd</sup>, 3<sup>rd</sup>, n<sup>th</sup> order). (Barboux &amp; Collet 2012). For example, The first order surface polynomial is a slanted flat plane whose formula is given by: <tt>Z = a + bX + cY</tt> where <tt>X</tt> and <tt>Y</tt> are the coordinate pairs. The second order surface polynomial (quadratic polynomial) is a parabolic surface whose formula is given by <tt>Z=a+bX+cY+dX2+eY2+XY</tt>.
+</p>
+
+<p>
+GRASS GIS does not have a dedicated function to compute trend surfaces. However, it is easy enough to create trend surfaces by combining <a href="https://grass.osgeo.org/grass72/manuals/r.mapcalc.html" title="r.mapcalc" class="https">r.mapcalc</a> and <a href="https://grass.osgeo.org/grass72/manuals/r.regression.multi.html" title="r.regression.multi" class="https">r.regression.multi</a>.
+</p>
+
+<p>
+<div class="question-box question"> Create a first order trend surface of the mean annual rainfall in North Carolina. The map should look like Figure 23.
+</p>
+
+<p>
+<a href="./spatial_interpolation/firstordertrend.png"><img src="./spatial_interpolation/firstordertrend.png" width="450"></a><br>
+<i>Figure 23. First order trend surface of mean annual rainfall</i>
+</p>
+
+<p>
+</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex11a');">BASH</a><div id="ex11a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Compute input variables
+r.mapcalc expression="xcoord = x()"
+r.mapcalc expression="ycoord = y()"
+
+# Compute trend surface
+r.regression.multi mapx=xcoord@exercise,ycoord@exercise \
+    mapy=rainfallstations@exercise estimates=firstordertrend
+
+# Print
+d.mon start=wx0 width=800 height=330 bgcolor=none
+d.rast firstordertrend
+d.legend -d raster=precip_voroi title="Precipitation (1st order trend)" \
+    label_step=500 at=25,29,10,50 font=arial fontsize=12
+
+# And if you are ready, close the window
+d.mon stop=wx0</code></pre>
+</div>
+
+</div></div>
+</p>
+
+<p>
+<div class="question-box question"> Exercise: create a second order trend surface of the mean annual rainfall in North Carolina. The map should look like Figure 24.
+</p>
+
+<p>
+<a href="./spatial_interpolation/secondordertrend.png"><img src="./spatial_interpolation/secondordertrend.png" width="450"></a><br>
+<i>Figure 24. Second order trend surface of mean annual rainfall</i>
+</p>
+
+<p>
+</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex12a');">BASH</a><div id="ex12a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Compute input variables
+r.mapcalc expression="xycoord = x()*y()"
+r.mapcalc expression="y2coord = y()^2"
+r.mapcalc expression="x2coord = x()^2"
+
+# Compute trend surface
+r.regression.multi mapx=xcoord,ycoord,xycoord,y2coord,x2coord \
+    mapy=rainfallstations@exercise estimates=secondordertrend
+
+# Print
+d.mon start=wx0 width=800 height=330 bgcolor=none
+d.rast secondordertrend
+d.legend -d raster=precip_voroi title="Precipitation (2st order trend)" \
+    label_step=500 at=25,29,10,50 font=arial fontsize=12
+
+# And if you are ready, close the window
+d.mon stop=wx0</code></pre>
+</div>
+
+</div></div>
+</p>
+
+<p>
+The first and second order polynomial regression models do not capture much of the details in the spatial distribution of rainfall patterns. The trend surfaces, especially the second order trend surface, does capture a major trend in the rainfall pattern from the highlands in the southwest to the drier central part, after which there is some increase again closer towards the coast. This is important information if we want to use spatial interpolation methods that assume that there is no global trend in the data. An example is ordinary kriging, a commonly used interpolation method.
+</p>
+
+<p>
+Thus, if we would like to use ordinary kriging to interpolate our rainfall data (something for a next tutorial), we would need to assume the mean and the variation in the rainfall is constant across the state. This assumption is clearly not met with our NC precipitation dataset as observed above. This means that we could only use ordinary kriging if we first remove the trend from the data (see also section 3.2.4).
+</p>
+
+<h3 id="H5_5">5.5 Notes</h3>
+
+<p>
+We have seen three simple geographic interpolation methods. There are more powerful methods available in GRASS, like interpolation with RST (<a href="https://grass.osgeo.org/grass72/manuals/v.surf.rst.html" title="v.surf.rst" class="https">v.surf.rst</a>) and kriging (<a href="https://grass.osgeo.org/grass72/manuals/addons/v.krige.html" title="v.krige" class="https">v.krige</a> and <a href="https://grass.osgeo.org/grass72/manuals/addons/v.kriging.html" title="v.kriging" class="https">v.kriging</a>). However, these require more fine tuning and deeper understanding of geostatistics. It is something I am planning for a next tutorial. However, if you are familiar with one or more of these techniques, you should by now be able to run these functions in GRASS GIS yourself.
+</p>
+
+<p>
+An important aspect in interpolation is the evaluation of your interpolation model to assess the accuracy and predictive power. Some of the above mentioned modules have options to carry out cross-validation. Examples are <a href="https://grass.osgeo.org/grass72/manuals/v.surf.idw.html" title="r.surf.idw" class="https">r.surf.idw</a> and <a href="https://grass.osgeo.org/grass72/manuals/v.surf.rst.html" title="v.surf.rst" class="https">v.surf.rst</a>. However, it is fairly easy to create your own cross validation routine in e.g., Python or R. If you want to get an idea how to do this, you can read this short tutorial / demonstration of using basic Python code to create a <a href="./cross_validation.html" title="cross validation" class="page">cross validation</a> routine.
+</p>
+
+<p>
+<div class="alert-box success"> This tutorial is work in progress and will be updated with new exercises when time allows. So keep an eye on this space. </div>
+</p>
+
+<h2 id="H6_0">6 Hands-on environmental interpolation</h2>
+
+<p>
+GRASS GIS offers some functionality to carry out environmental  point interpolation, more often referred to as environmental or niche modeling. These are models with one or more environmental variables as independent (also called predictor) variables and a dependent variable to be explained or predicted by the model. One is the <a href="https://grass.osgeo.org/grass72/manuals/r.regression.multi.html" title="multiple linear regression" class="https">multiple linear regression</a> function we used above. Another is the geographically weighted regression from raster maps (<a href="https://grass.osgeo.org/grass72/manuals/addons/r.gwr.html" title="r.gwr" class="https">r.gwr</a> addon).
+</p>
+
+<p>
+Fairly recent, an addon (<a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html" title="r.learn.ml" class="https">r.learn.ml</a>) was developed that offers various state of the art regression and machine learning techniques, based on the python scikit-learn package. This package can be used for e.g., predicting the distribution of plant or animal species based on observed occurrences. Another application is for the classification of satellite images. In the <a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html" title="manual page" class="https">manual page</a> of this addon you can find an example of the latter.
+</p>
+
+<h3 id="H6_1">6.1 Example data</h3>
+
+<p>
+In our exercise below, we will use the r.learn.ml package to model the distribution of the species Mountain Laurel (<i>Kalmia latifolia</i>), using bioclimatic variables as predictors. We imported the bioclim variables earlier in this tutorial. As you may remember, there are 19 variables. As these are all variables computed based on the monthly rainfall and temperature data (see <a href="http://www.worldclim.org/bioclim" title="here" class="http" target="_blank" target="_blank">here</a> how), they are all to some extend correlated. This may cause issues when modeling, as briefly explained <a href="./vif-stepwise-selection.html" title="here." class="page">here.</a> The first step therefore be to use the variance inflation factor selection procedure to select variables with sufficient low multicollinearity.
+</p>
+
+<p>
+<div class="question-box question"> Use the <a href="https://grass.osgeo.org/grass72/manuals/addons/r.vif.html" title="r.vif" class="https">r.vif</a> addon to select the set of bioclim variables with sufficient low multicollinearity (VIF < 5). The procedure is explained in <a href="./vif-stepwise-selection.html" title="this tutorial" class="page">this tutorial</a> </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px;"><a href="javascript:toggleDiv('ex13a');">Bash</a><div id="ex13a" style="display:none">
+
+<p>
+Note that in the example below, we run the <a href="https://grass.osgeo.org/grass72/manuals/g.list.html" title="g.list" class="https">g.list</a> function and assign the output to a variable (A). This is a convenient way to use the output of that function in another function (<a href="https://grass.osgeo.org/grass72/manuals/addons/r.vif.html" title="r.vif" class="https">r.vif</a> in this case) without having to type or copy/paste the results. We do the same again when writing the results of r.vif to the variable B, which we then can use directly as input for the <a href="https://grass.osgeo.org/grass72/manuals/i.group.html" title="i.group" class="https">i.group</a> function.
+</p>
+
+<p>
+And talking about i.group, this function collects raster map layers in an imagery group. Imagery groups are used as in input in <tt>i.*</tt> functions. This is basically just a convenient way to provide a list of layer names as input (similar, in fact, to the use of a variable A to hold a list of names in Bash). Somewhat unconventional for a raster function, <a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html" title="r.learn.ml" class="https">r.learn.ml</a> also requires an imagery group as input. I guess this is because the developer uses this function for classification of remote sensing imagery. In any case, I find it rather convenient when used as part of a larger workflow.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># First create a list of all bioclim variables. The list will be stored in the
+# object)
+A=`g.list type=raster pattern=bio* mapset=bioclim sep=,`
+
+# Show the list on the command line
+echo $A
+
+# Run the VIF stepwise selection procedure. The result will be stored in the
+# object B
+B=`r.vif -s maps=$A n=25% maxvif=5`
+
+# Note that this is the same as:
+# r.vif -s maps=bio14,bio3,bio4,bio8,bio9 n=25% maxvif=5
+
+# Assign the variables to a group using the i.group function
+i.group group=mygroup input=$B
+
+# And, just to check, list the layers in the newly created group
+i.group -l group=mygroup</code></pre>
+</div>
+
+</div></div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 18px;"><a href="javascript:toggleDiv('ex13b');">Python</a><div id="ex13b" style="display:none">
+
+<p>
+Note that I am using the <a href="https://grass.osgeo.org/grass72/manuals/libpython/script_intro.html" title="GRASS module interface to a script" class="https">GRASS module interface to a script</a> below (see the <a href="https://grasswiki.osgeo.org/wiki/GRASS_Python_Scripting_Library" title="Wiki page" class="https">Wiki page</a> for more info about this API), whereas in the earlier examples, I use the <a href="https://grasswiki.osgeo.org/wiki/Python/pygrass" title="pygrass" class="https">pygrass</a> Library. See <a href="https://grass.osgeo.org/grass72/manuals/libpython/index.html" title="here" class="https">here</a> for more information about the use of both libraries.
+</p>
+
+<div class="zim-object">
+<pre><code class="language-python line-numbers"># Import modules
+import grass.script as gs
+
+# Get list of maps
+A = gs.read_command("g.list", type="raster", pattern="bio*",
+                       mapset="bioclim")
+A = filter(None, VARS.split('\n'))
+
+# Select variables using the r.vif function
+MAPS = gs.read_command("r.vif", flags="s", maps=A, maxvif="10")
+MAPS = filter(None, MAPS.split('\n'))[0].split(',')
+
+# Use the variables
+gs.run_command("i.group", group="mygroup", input=MAPS)</code></pre>
+</div>
+
+</div></div>
+
+<p>
+We will use the distribution point data of of the species Mountain Laurel (<i>Kalmia latifolia</i>) from the <a href="http://www.gbif.org/" title="GBIF database" class="http" target="_blank" target="_blank">GBIF database</a>. There are various ways to import GBIF data, including directly from the website as comma delimited file (csv) and using the <a href="https://grass.osgeo.org/grass72/manuals/addons/v.in.gbif.html" title="v.in.gbif" class="https">v.in.gbif</a> addon for GRASS. I already downloaded the data for you, using the rgbif package in R, as explained <a href="./grass-r-gbif.html" title="here" class="page">here</a>. The data can be downloaded <a href="./spatial_interpolation/KLdistribution.pack" title="here" class="file">here</a> as a <a href="https://grass.osgeo.org/grass73/manuals/r.pack.html" title="GRASS pack archive file" class="https">GRASS pack archive file</a>. You can use the <a href="https://grass.osgeo.org/grass73/manuals/r.unpack.html" title="r.unpack" class="https">r.unpack</a> function to import this vector point data layer. The layer with the distribution point data is called <i>KLdistribution</i>.
+</p>
+
+<h3 id="H6_2">6.2 A quick glance at the l.learn.ml</h3>
+
+<p>
+Here we are going to use r.learn.ml for species distribution modeling, also known as ecological or environmental niche modeling. This is essentially the construction of a spatial model of distribution given a set of sample occurrences and their respective environmental values. In our case, this would be the sample occurrences of the species Mountain Laurel (<i>Kalmia latifolia</i>) and the values of the bioclim variables (the ones we selected earlier) in those locations.
+</p>
+
+<p>
+The  <a href="https://grass.osgeo.org/grass72/manuals/addons/r.learn.ml.html" title="r.learn.ml" class="https">r.learn.ml</a> addon offers a number of different techniques that can be used for this. We are going to use the <a href="https://en.wikipedia.org/wiki/Random_forest" title="RandomForestClassifier" class="https">RandomForestClassifier</a>. As input, the randomforest function in r.learn.ml needs a raster or vector layer representing the dependent variable. This variable can be a continuous variable (an example would be population numbers) or categorical (an example could be land use categories).
+</p>
+
+<p>
+In our case, we only have species presence data, i.e., data points where the species occurs. At the very minimum, we also need data about where the species does not occur. Unfortunately, we do not have this information. An often used solution is to create pseudo absence or background points. For an explanation of these concepts, see e.g., <a href="http://rspatial.org/sdm/rst/3_sdm_absence-background.html" title="here" class="http" target="_blank" target="_blank">here</a>. In short, pseudo absence points are points selected randomly across the study areas (excluding the locations where the species is known to occur).
+</p>
+
+<p>
+<div class="question-box question"> Exercise: Create a raster layer with presence / absence points of Mountain Laurel. Hint: use the following steps: (1) convert the vector layer with sample occurrences of Mountain Laurel in North Carolina to a raster layer using <a href="https://grass.osgeo.org/grass72/manuals/v.to.rast.html" title="v.to.rast" class="https">v.to.rast</a>. Make sure the raster cells where the species occurs get assigned a value 1 and all other raster cells NULL (no data). (2) Create a layer with random points with value 0 and all other points NULL using <a href="https://grass.osgeo.org/grass72/manuals/v.random.html" title="r.random" class="https">r.random</a>. (3) Combine the two layers using <a href="https://grass.osgeo.org/grass72/manuals/r.patch.html" title="r.patch" class="https">r.patch</a>.</div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 18px;"><a href="javascript:toggleDiv('ex14a');">Answer</a><div id="ex14a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Presence points
+v.to.rast input=KLdistribution output=KLdist use=val
+
+# Pseudo absence points
+r.random input=MASK@exercise npoints=250 raster=KLabs
+r.mapcalc expression="KLabs = KLabs * 0" --overwrite
+
+# Combine the two
+r.patch input=KLdist@exercise,KLabs@exercise output=KLpresabs</code></pre>
+</div>
+
+</div></div>
+
+<p>
+We can now use the presence / absence layer we just created as input (dependent variable) in our randomforest model. Remember that as independent (predictor) variables, we use the bioclim variables we selected earlier with the stepwise VIF selection procedure.
+</p>
+
+<p>
+<div class="question-box question"> Exercise: Create a probability distribution map of Mountain Laurel. Note, this is a map that shows for each raster cell the probability that Mountain Laurel occurs there.The final map should look something like the map in Figure 25.
+</p>
+
+<p>
+<a href="./spatial_interpolation/KLdistribution.png"><img src="./spatial_interpolation/KLdistribution.png" width="450"></a><br>
+<i>Figure 25. The probability distribution of Mountain Laurel (Kalmia latifolia) in North Carolina, overlaid with the recorded species occurrence locations.</i>
+</p>
+
+<p>
+   </div><div style="border-bottom:1px dashed #2b73d0; border-left:1px dashed #2b73d0; border-right:1px dashed #2b73d0; padding: 5px; margin-bottom: 18px;"><a href="javascript:toggleDiv('ex15a');">Answer</a><div id="ex15a" style="display:none">
+
+<div class="zim-object">
+<pre><code class="language-bash line-numbers"># Run the model
+r.learn.ml -s -p classifier=RandomForestClassifier group=mygroup \
+    trainingmap=KLpresabs output=KLdistributionmap
+
+# Creat the map
+d.mon start=wx0 width=800 height=330 bgcolor=none
+d.rast KLdistributionmap_classPr1
+d.vect map=KLdistribution color=red fill_color=none \
+    icon=basic/circle width=0.5
+d.legend -d raster=KLdistributionmap_classPr1 title="Prob. distr. Mountain Laurel" \
+    label_step=500 at=25,29,10,50 font=arial fontsize=12
+
+# And if you are ready, close the window
+d.mon stop=wx0</code></pre>
+</div>
+
+</div></div>
+
+<p>
+Note that this is just one of the options this addon offers. You can choose from a number of different models. In addition, it offers the option to carry out cross-validation at the model development stage (this is useful to select the best parameter values) and to evaluate the final model output.
+</p>
+
+<h3 id="H6_3">6.3 Notes</h3>
+
+<p>
+If you are looking for model approaches not available in GRASS GIS or the r.learn.ml addon, you should checkout if it is available in R (there is a high change it is). It is very easy to run R functions from within GRASS. For example, one can start a R session from the GRASS GIS command line. You can then read and write data from and into your GRASS database, and execute GRASS GIS commands from within R.
+</p>
+
+<p>
+A special R package, <a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7" title="rgrass7" class="https">rgrass7</a>, provides the necessary interface to read and write data from and into GRASS Database, as well as to execute GRASS GIS commands from within R. This allows you to utilize the many different interpolation and machine learning models available in R. More details and examples on both ways of combining GRASS and R can be found in the <a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass7" title="GRASS and R dedicated wiki page" class="https">GRASS and R dedicated wiki page</a>.
+</p>
+
+
+<hr>
+
+<h2>7 References</h2>
+
+<p>
+<ul>
+<li>Burrough, T. late P.P.A., McDonnell, R.A., &amp; Lloyd, C.D. 2015. Principles of Geographical Information Systems. Oxford University Press, Oxford, New York.</li>
+<li>Hengl, T. 2007. A practical guide to geostatistical mapping of environmental variables. JRC Scientific and Technical Reports. European Commission, Joint Research Centre, Luxemburg.</li>
+<li>Regression kriging -  <a href="https://en.wikipedia.org/wiki/Regression-kriging" title="https://en.wikipedia.org/wiki/Regression-kriging" class="https">https://en.wikipedia.org/wiki/Regression-kriging</a></li>
+<li>Gimond, M. 2017. Intro to GIS and Spatial Analysis. URL: <a href="https://mgimond.github.io/Spatial/index.html" title="https://mgimond.github.io/Spatial/index.html" class="https">https://mgimond.github.io/Spatial/index.html</a></li>
+<li>Neteler, M., &amp; Mitasova, H. 2008. Open source GIS: A GRASS GIS approach. Springer Science+Business Media, New York.</li>
+<li>Tobler, W. R. (1970). A computer movie simulating urban growth in the Detroit region. Economic Geography, 46(2): 234-240.</li>
+<li>Ly, S., Charles, C., &amp; Degré, A. 2013. Different methods for spatial interpolation of rainfall data for operational hydrology and hydrological modeling at watershed scale: a review. BASE. URL: <a href="http://www.pressesagro.be/base/text/v17n2/392.pdf" title="http://www.pressesagro.be/base/text/v17n2/392.pdf" class="http" target="_blank" target="_blank">http://www.pressesagro.be/base/text/v17n2/392.pdf</a></li>
+<li>Hengl 2008. How to use kriging. In: ILWIS (3.5) manual. URL: <a href="http://spatial-analyst.net/ILWIS/htm/ilwis/how_to_use_kriging.htm" title="http://spatial-analyst.net/ILWIS/htm/ilwis/how_to_use_kriging.htm" class="http" target="_blank" target="_blank">http://spatial-analyst.net/ILWIS/htm/ilwis/how_to_use_kriging.htm</a></li>
+<li>Barboux, C. &amp; Collet, C. 2012. Spatial Change Analysis. Geographic Information Technology Training Alliance (GITTA). URL: <a href="http://www.gitta.info/SpatChangeAna/en/html/spatial_dist_an_TrendSurf.html" title="http://www.gitta.info/SpatChangeAna/en/html/spatial_dist_an_TrendSurf.html" class="http" target="_blank" target="_blank">http://www.gitta.info/SpatChangeAna/en/html/spatial_dist_an_TrendSurf.html</a></li>
+</ul>
+</p>
+
+
+
+
+
+
+
+            <div class="scroll-top-wrapper ">
+                <span class="scroll-top-inner"></span>
+            </div>
+
+            <!-- ============================================== Start footer -->
+            <br><br>
+            <div id='footer'>
+                <hr>
+                <a href="http://creativecommons.org/licenses/by-sa/4.0/"><img src="./spatial_interpolation/ccbysa.png"></a><br>
+                This tutorial was developed as course material for the <i>Hands-on to GIS and Remote Sensing with GRASS GIS</i> course by Veronica Andreo, Sajid Pareeth and Paulo van Breugel. This work is licensed under a <a href="http://creativecommons.org/licenses/by-nc/4.0/" title="Creative Commons Attribution-NonCommercial 4.0" class="http" target="_blank" target="_blank">Creative Commons Attribution-NonCommercial 4.0</a> International License.
+            </div>
+
+            <!-- ================================================ End footer -->
+            </div>
+        </div>
+	</div>
+
+</body>
+
+</html>
